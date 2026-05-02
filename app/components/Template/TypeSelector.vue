@@ -7,7 +7,7 @@
       :class="
         selected === item
           ? 'bg-primary-500 border-primary-500 text-white'
-          : 'bg-gray-200 border-gray-300 dark:border-gray-600 hover:border-primary-400 hover:text-primary-500 hover:bg-transparent'
+          : 'bg-gray-200 border-gray-300 text-black hover:border-primary-400 hover:text-primary-500 hover:bg-transparent'
       "
       @click="handleSelect(item)"
     >

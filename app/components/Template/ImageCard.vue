@@ -16,11 +16,19 @@
     />
 
     <template #footer>
-      <UButton label="Utiliser" />
+      <UButton label="Utiliser" @click="useTemplate" />
     </template>
   </UPageCard>
 </template>
 <script setup lang="ts">
 const title = "Image";
 const description = "Un modèle d'image professionnel pour vos projets.";
+
+const router = useRouter();
+
+function useTemplate() {
+  const templateId = getRandomTemplateId();
+  console.log("Utiliser le template", templateId);
+  router.push(`/generation?templateId=${templateId}`);
+}
 </script>
