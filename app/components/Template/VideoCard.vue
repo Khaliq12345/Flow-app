@@ -16,7 +16,17 @@
     />
 
     <template #footer>
-      <UButton label="Utiliser" />
+      <UButton label="Utiliser" @click="useTemplate" />
     </template>
   </UPageCard>
 </template>
+
+<script setup>
+const router = useRouter();
+
+function useTemplate() {
+  const templateId = getRandomTemplateId();
+  console.log("Utiliser le template", templateId);
+  router.push(`/generation?templateId=${templateId}`);
+}
+</script>

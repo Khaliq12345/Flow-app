@@ -1,9 +1,8 @@
 <template>
   <div class="w-full px-3">
-    <UPageHeader
+    <Header
       title="Créer un contenu"
       description="Choisissez le type de contenu à générer"
-      :ui="{ root: 'relative py-2 border-none gap-2' }"
     />
 
     <UContainer class="py-8">
