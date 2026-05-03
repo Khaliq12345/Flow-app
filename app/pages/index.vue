@@ -1,6 +1,6 @@
 <template>
   <!-- Root -->
-  <div class="w-full px-8 space-y-6 pb-5 overflow-y-auto">
+  <div class="w-full px-8 space-y-6 pb-20 md:pb-5 overflow-y-auto">
     <!-- Header -->
     <Header
       :title="title"
@@ -36,7 +36,7 @@
       <HomeTemplateList
         title="Modèles Images"
         :items="recentTemplates"
-        view-more-link="/template/images"
+        view-more-link="/template/image"
       />
     </div>
   </div>

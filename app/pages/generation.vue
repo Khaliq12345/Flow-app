@@ -1,12 +1,9 @@
 <template>
   <div class="w-full px-4 pt-2 pb-20 md:pb-10 overflow-y-auto space-y-6">
     <!-- Header -->
-    <UPageHeader
+    <Header
       title="Génération de contenu"
       description="Remplissez les champs requis pour générer votre contenu"
-      :ui="{
-        root: 'relative py-2 border-none gap-2',
-      }"
     />
 
     <!-- Template Form -->
@@ -29,5 +26,4 @@ const templateId = route.query.templateId as string;
 
 const template = getTemplateById(templateId);
 const showMissingTemplateModal = ref(!template);
-
 </script>

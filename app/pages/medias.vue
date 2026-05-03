@@ -3,15 +3,11 @@
   <div class="w-full px-2 pt-2 pb-20 md:pb-0 overflow-y-auto space-y-2">
     <!-- header -->
     <div class="px-2 flex flex-col md:flex-row items-center justify-between">
-      <UPageHeader
-        :title="title"
-        :description="description"
-        :ui="{
-          root: 'relative py-2 border-none gap-2',
-          description: 'hidden md:block',
-        }"
-      />
-      <MediaNav class="w-full md:w-48" />
+      <Header :title="title" :description="description">
+        <template #actions>
+          <MediaNav />
+        </template>
+      </Header>
     </div>
     <!-- content -->
     <div

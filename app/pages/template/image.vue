@@ -2,13 +2,9 @@
   <!-- root -->
   <div class="w-full px-4 pt-2 pb-20 md:pb-0 overflow-y-auto space-y-4">
     <!-- Header -->
-    <UPageHeader
+    <Header
       title="Modèle d'images"
       description="Choisissez un modèle d'image choisi et designé avec soin pour satisfaire vos besoins"
-      :ui="{
-        root: 'relative py-2 border-none gap-2',
-        description: 'hidden md:block',
-      }"
     />
     <!-- Type Selector -->
     <TemplateTypeSelector
