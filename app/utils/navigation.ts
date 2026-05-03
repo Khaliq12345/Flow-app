@@ -33,6 +33,6 @@ export const mainNavItems: NavigationMenuItem[] = [
   {
     label: "Paramètres",
     icon: "i-lucide-settings",
-    to: "/parametres",
+    to: "/settings",
   },
 ];
