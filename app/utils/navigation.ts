@@ -5,6 +5,7 @@ export const mainNavItems: NavigationMenuItem[] = [
     label: "Accueil",
     icon: "i-lucide-house",
     to: "/",
+    exact: true,
   },
   {
     label: "Médias",
@@ -14,7 +15,20 @@ export const mainNavItems: NavigationMenuItem[] = [
   {
     label: "Modèles",
     icon: "i-lucide-box",
-    to: "/modeles",
+    to: "/template",
+    exact: false,
+    children: [
+      {
+        label: "Image",
+        icon: "i-lucide-image",
+        to: "/template/image",
+      },
+      {
+        label: "Vidéo",
+        icon: "i-lucide-video",
+        to: "/template/video",
+      },
+    ],
   },
   {
     label: "Paramètres",

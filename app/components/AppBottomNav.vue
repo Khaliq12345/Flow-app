@@ -8,7 +8,10 @@
           v-if="!item?.isAction"
           :to="item?.to"
           class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
-          :class="{ 'text-primary dark:text-primary': $route.path === item?.to }"
+          :class="{
+            'text-primary dark:text-primary':
+              item?.to && $route.path.startsWith(item.to),
+          }"
         >
           <UIcon :name="item?.icon" class="size-5 mb-1" />
           <span class="text-xs">{{ item?.label }}</span>
