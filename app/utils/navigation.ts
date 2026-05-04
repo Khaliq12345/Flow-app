@@ -31,6 +31,11 @@ export const mainNavItems: NavigationMenuItem[] = [
     ],
   },
   {
+    label: "Historique",
+    icon: "i-lucide-credit-card",
+    to: "/payments/history",
+  },
+  {
     label: "Paramètres",
     icon: "i-lucide-settings",
     to: "/settings",
