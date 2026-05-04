@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import type { TemplateListItem } from "~/types/home";
 
-const title = gretting() + ", User";
+const title = gretting() + ", Matthiew !";
 
 const popularTemplates: TemplateListItem[] = [
   {
