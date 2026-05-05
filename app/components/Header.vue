@@ -3,7 +3,7 @@
   <div class="w-full flex items-center justify-between gap-4 flex-wrap py-4">
     <div class="flex flex-col gap-1">
       <h1
-        class="text-2xl sm:text-4xl font-medium text-gray-900 dark:text-white leading-tight"
+        class="text-xl sm:text-4xl font-medium text-gray-900 dark:text-white leading-tight"
       >
         {{ title }}
       </h1>
