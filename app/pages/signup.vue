@@ -83,32 +83,6 @@
                         </UFormField>
 
                         <UFormField
-                            label="Industrie"
-                            name="industry"
-                            :ui="{ label: labelClass }"
-                        >
-                            <UInput
-                                v-model="state.industry"
-                                placeholder="Tech, Santé..."
-                                class="w-full"
-                                :ui="{ base: inputClass }"
-                            />
-                        </UFormField>
-
-                        <UFormField
-                            label="Contenu"
-                            name="content"
-                            :ui="{ label: labelClass }"
-                        >
-                            <UInput
-                                v-model="state.content"
-                                placeholder="Type de contenu..."
-                                class="w-full"
-                                :ui="{ base: inputClass }"
-                            />
-                        </UFormField>
-
-                        <UFormField
                             label="Mot de passe"
                             name="password"
                             :ui="{ label: labelClass }"
@@ -177,10 +151,7 @@ const schema = z
         nom: z.string("Nom obligatoire").min(2, "Minimum 2 caractères"),
         prenom: z.string("Prénom obligatoire").min(2, "Minimum 2 caractères"),
         email: z.email("Email obligatoire"),
-        industry: z
-            .string("Industrie obligatoire")
-            .min(2, "Minimum 2 caractères"),
-        content: z.string("Contenu obligatoire").min(2, "Minimum 2 caractères"),
+
         password: z
             .string("Mot de passe obligatoire")
             .min(6, "Minimum 6 caractères"),
@@ -211,7 +182,9 @@ const videos = [
 
 const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
 
-function onSubmit(event: FormSubmitEvent<Schema>) {
+const { signup } = useAuth();
+async function onSubmit(event: FormSubmitEvent<Schema>) {
     console.log(event.data);
+    await signup(event.data);
 }
 </script>
