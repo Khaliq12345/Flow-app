@@ -18,7 +18,7 @@ export default () => {
     }
   };
 
-  const fetchTemplateCount = async (type: string): Promise<number> => {
+  const fetchTemplatesCount = async (type: string): Promise<number> => {
     try {
       const count = await $fetch("/api/template/count", {
         query: { type },
@@ -32,6 +32,6 @@ export default () => {
 
   return {
     fetchTemplates,
-    fetchTemplateCount,
+    fetchTemplatesCount,
   };
 };

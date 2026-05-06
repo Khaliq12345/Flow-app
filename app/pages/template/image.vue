@@ -16,11 +16,11 @@
       <TemplateTypeSelector
         :items="typeList"
         :default="typeList[0] || ''"
-        @select="(item) => console.log(item)"
+        @select="(item: string) => console.log(item)"
       />
       <!-- Grid Container -->
       <div class="templategrid">
-        <TemplateCard
+        <TemplateMediaCard
           v-for="template in templates"
           :key="template.id"
           :template="template"
@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import type { Template } from "~/types/template";
-const { fetchTemplates, fetchTemplateCount } = useTemplates();
+const { fetchTemplates, fetchTemplatesCount } = useTemplates();
 
 const templates = ref<Template[]>([]);
 
@@ -84,7 +84,7 @@ async function getTemplate(newPage: number = 1) {
     limit,
     (page.value - 1) * limit,
   );
-  total.value = await fetchTemplateCount("image");
+  total.value = await fetchTemplatesCount("image");
   loading.value = false;
 }
 
