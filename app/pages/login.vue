@@ -1,55 +1,3 @@
-<script setup lang="ts">
-definePageMeta({
-  layout: false,
-});
-import { z } from "zod";
-import type { FormSubmitEvent } from "@nuxt/ui";
-
-// Liste des vidéos disponibles
-const videos = [
-  "https://www.pexels.com/fr-fr/download/video/36179611/",
-  "https://www.pexels.com/fr-fr/download/video/32053942/",
-  "https://www.pexels.com/fr-fr/download/video/37099166/",
-  "https://www.pexels.com/fr-fr/download/video/32072019/",
-  "https://www.pexels.com/fr-fr/download/video/35626338/",
-];
-
-// Vidéo sélectionnée aléatoirement au montage du composant
-const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
-
-const schema = z.object({
-  email: z.email("Email invalide"),
-  password: z.string("Mot de passe invalide").min(6, "Minimum 6 caractères"),
-});
-
-type Schema = z.output<typeof schema>;
-
-const fields = [
-  {
-    name: "email",
-    type: "email",
-    label: "Email",
-    placeholder: "votre@email.com",
-    ui: {
-      base: "bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15",
-    },
-  },
-  {
-    name: "password",
-    type: "password",
-    label: "Mot de passe",
-    placeholder: "••••••••",
-    ui: {
-      base: "bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15",
-    },
-  },
-];
-
-function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data);
-}
-</script>
-
 <template>
   <div class="relative min-h-screen w-full">
     <!-- Vidéo plein écran en arrière-plan -->
@@ -119,3 +67,54 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
     </div>
   </div>
 </template>
+<script setup lang="ts">
+definePageMeta({
+  layout: false,
+});
+import { z } from "zod";
+import type { FormSubmitEvent } from "@nuxt/ui";
+
+// Liste des vidéos disponibles
+const videos = [
+  "https://www.pexels.com/fr-fr/download/video/36179611/",
+  "https://www.pexels.com/fr-fr/download/video/32053942/",
+  "https://www.pexels.com/fr-fr/download/video/37099166/",
+  "https://www.pexels.com/fr-fr/download/video/32072019/",
+  "https://www.pexels.com/fr-fr/download/video/35626338/",
+];
+
+// Vidéo sélectionnée aléatoirement au montage du composant
+const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
+
+const schema = z.object({
+  email: z.email("Email invalide"),
+  password: z.string("Mot de passe invalide").min(6, "Minimum 6 caractères"),
+});
+
+type Schema = z.output<typeof schema>;
+
+const fields = [
+  {
+    name: "email",
+    type: "email",
+    label: "Email",
+    placeholder: "votre@email.com",
+    ui: {
+      base: "bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15",
+    },
+  },
+  {
+    name: "password",
+    type: "password",
+    label: "Mot de passe",
+    placeholder: "••••••••",
+    ui: {
+      base: "bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15",
+    },
+  },
+];
+
+function onSubmit(event: FormSubmitEvent<Schema>) {
+  console.log(event.data);
+}
+</script>
