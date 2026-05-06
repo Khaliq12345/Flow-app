@@ -10,6 +10,7 @@
     }"
   >
     <video
+      v-if="type === 'video'"
       :src="
         mediaLink(
           props.template.preview,
@@ -21,6 +22,17 @@
       autoplay
       loop
       muted
+    />
+    <img
+      v-else
+      :src="
+        mediaLink(
+          props.template.preview,
+          '621fff21-60bb-433b-82f6-14e968d77b2d',
+        )
+      "
+      :alt="props.template.name"
+      class="w-full rounded-md"
     />
 
     <template #footer>
@@ -34,6 +46,7 @@ import type { Template } from "~/types/template";
 
 const props = defineProps<{
   template: Template;
+  type: "image" | "video";
 }>();
 
 const router = useRouter();

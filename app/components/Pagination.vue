@@ -20,6 +20,7 @@
       color="neutral"
       variant="ghost"
       size="sm"
+      @update:page="emit('update:current', $event)"
     />
   </div>
 </template>
