@@ -67,7 +67,8 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
       >
         <!-- Titre + description -->
         <div class="mb-6">
-          <h2 class="text-white text-xl font-semibold">Créer un compte</h2>
+          <h1 class="text-white text-center text-4xl font-semibold mb-4">Flow</h1>
+          <h2 class="text-white text-lg font-semibold">Créer un compte</h2>
           <p class="text-white/60 text-sm mt-1">
             Renseignez vos informations pour commencer.
           </p>

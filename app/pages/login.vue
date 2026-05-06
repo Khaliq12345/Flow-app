@@ -72,6 +72,7 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
       <div
         class="w-full max-w-sm rounded-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 shadow-2xl p-8"
       >
+        <h1 class="text-white text-center text-4xl font-semibold mb-4">Flow</h1>
         <UAuthForm
           :schema="schema"
           :fields="fields"
