@@ -4,4 +4,11 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   css: ["~/assets/main.css"],
   modules: ["@nuxt/ui", "@vueuse/nuxt"],
+  runtimeConfig: {
+    staticTokenPrivate: "",
+    public: {
+      staticToken: "",
+      directusUrl: "",
+    },
+  },
 });

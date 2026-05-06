@@ -1,10 +1,17 @@
-import { createDirectus, rest, readItem, readItems } from "@directus/sdk";
-
-const directus = createDirectus("http://178.104.216.21:8055/admin").with(
-  rest(),
-);
+import {
+  createDirectus,
+  rest,
+  readItem,
+  readItems,
+  staticToken,
+} from "@directus/sdk";
 
 export default defineNuxtPlugin(() => {
+  const config = useRuntimeConfig();
+  const directus = createDirectus(config.public.directusUrl)
+    .with(rest())
+    .with(staticToken(config.staticTokenPrivate));
+
   return {
     provide: { directus, readItem, readItems },
   };
