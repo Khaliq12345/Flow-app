@@ -1,7 +1,8 @@
-type TemplateInput = {
+export type TemplateInput = {
   type: "image" | "text";
   name: string;
   description: string;
+  field_type: "input" | "textarea";
 };
 
 export type Template = {
@@ -14,5 +15,5 @@ export type Template = {
   price: string;
   inputs: TemplateInput[];
   preview: string; // uuid of media
-  type: "video" | "image" | "text";
+  type: "video" | "image";
 };

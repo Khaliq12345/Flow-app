@@ -7,7 +7,7 @@
 }
 
 .rootdiv {
-  @apply w-full px-4 pt-2 pb-20 md:pb-0 overflow-y-auto space-y-4 2xl:mx-auto 2xl:max-w-6xl 2xl:[scrollbar-width:none];
+  @apply w-full px-4 pt-2 pb-20 md:pb-5 overflow-y-auto space-y-4 2xl:mx-auto 2xl:max-w-6xl 2xl:[scrollbar-width:none];
 }
 
 .templategrid {

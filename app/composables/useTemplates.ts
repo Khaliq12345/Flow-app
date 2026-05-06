@@ -30,8 +30,19 @@ export default () => {
     }
   };
 
+  const fetchTemplateById = async (id: string): Promise<Template | null> => {
+    try {
+      const template = await $fetch<Template>(`/api/template/${id}`);
+      return template;
+    } catch (error) {
+      console.error(`Error fetching template with id ${id}:`, error);
+      return null;
+    }
+  };
+
   return {
     fetchTemplates,
     fetchTemplatesCount,
+    fetchTemplateById,
   };
 };
