@@ -8,7 +8,6 @@
     />
     <Loading
       v-if="loading"
-      class="flex items-center justify-center my-auto min-h-40"
     />
     <!-- if loading end -->
     <div v-if="!loading && templates.length > 0" class="space-y-4">
