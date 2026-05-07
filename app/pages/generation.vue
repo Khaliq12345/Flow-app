@@ -14,7 +14,7 @@
       <p class="text-xl font-semibold">Modèle choisi :</p>
       <!-- Preview -->
       <div class="flex items-center">
-        <TemplateMediaCard
+        <GenerationMediaCard
           :template="template"
           :type="template?.type"
           :hideFooter="true"

@@ -34,6 +34,7 @@ export const mainNavItems: NavigationMenuItem[] = [
     label: "Historique",
     icon: "i-lucide-credit-card",
     to: "/payments/history",
+    inPopover: true,
   },
   {
     label: "Générations",
@@ -44,5 +45,6 @@ export const mainNavItems: NavigationMenuItem[] = [
     label: "Paramètres",
     icon: "i-lucide-settings",
     to: "/settings",
+    inPopover: true,
   },
 ];
