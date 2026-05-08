@@ -3,6 +3,7 @@ import { useFedapay } from "~~/server/utils/fedapay.ts";
 
 export default defineEventHandler(async (event) => {
   try {
+    useFedapay();
     const customerId = getRouterParam(event, "id") as string;
     const customer = await Customer.retrieve(customerId);
 
@@ -11,10 +12,10 @@ export default defineEventHandler(async (event) => {
     // Laisser passer les erreurs H3 (createError) telles quelles
     if (err.statusCode) throw err;
 
-    console.error("[payment] Erreur inattendue:", err?.message ?? err);
+    console.error("[payment/customers/[id].get] Erreur inattendue:", err?.message ?? err);
     throw createError({
       statusCode: 500,
-      message: err?.message ?? "Erreur interne du serveur.",
+      message: `[payment/customers/[id].get] ${err?.message ?? "Erreur interne du serveur."}`,
     });
   }
 });

@@ -84,6 +84,7 @@
 
 <script setup lang="ts">
 import type { TemplateInput } from "~/types/template";
+import { useAuthStore } from "~/stores/auth";
 
 const props = defineProps<{
   inputs: TemplateInput[];
@@ -122,36 +123,41 @@ function autoExpand(event: Event) {
   textarea.style.height = Math.min(textarea.scrollHeight, 500) + "px";
 }
 
-import { useAuthStore } from "~/stores/auth";
-const { initiatePayment, payAndRedirect } = usePayment();
+const { payAndRedirect } = usePayment();
 const authStore = useAuthStore();
 
 const paymentLoading = ref(false);
 
 async function testPayment() {
   paymentLoading.value = true;
-  // Hydrate le store avec un utilisateur fictif
-  authStore.setUser({
-    id: "4ec09aeb-a2c6-4650-94da-8393e86d1a54",
-    first_name: "James",
-    last_name: "Lanha",
-    email: "james@tech2work.tech",
-    phone: "+22997491925",
-    phone_country: "BJ",
-  });
+  try {
+    // Hydrate le store avec un utilisateur fictif
+    authStore.setUser({
+      id: "4ec09aeb-a2c6-4650-94da-8393e86d1a54",
+      first_name: "James",
+      last_name: "Lanha",
+      email: "james@tech2work.tech",
+      phone: "+22997491925",
+      phone_country: "BJ",
+    });
 
-  // Appel avec une transaction fictive
-  const result = await payAndRedirect({
-    amount: 100,
-    description: "Paiement test abonnement",
-    currency: "XOF",
-    phone_country: "BJ",
-    callback_url: "http://localhost:3000/payments/callback",
-  });
+    // Appel avec une transaction fictive
+    const result = await payAndRedirect({
+      amount: 100,
+      description: "Paiement test abonnement",
+      currency: "XOF",
+      phone_country: "BJ",
+      callback_url: "http://localhost:3000/payments/callback",
+    });
 
-  console.log("[testPayment] Résultat:", result);
-  paymentLoading.value = false;
-  return result;
+    console.log("[testPayment] Résultat:", result);
+    return result;
+  } catch (error) {
+    console.error("[testPayment] Erreur:", error);
+    throw error;
+  } finally {
+    paymentLoading.value = false;
+  }
 }
 
 async function foo() {
