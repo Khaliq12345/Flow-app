@@ -11,4 +11,7 @@ export default defineNuxtConfig({
       directusUrl: "",
     },
   },
+  fonts: {
+    provider: "google",
+  },
 });

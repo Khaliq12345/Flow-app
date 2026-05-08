@@ -10,6 +10,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@directus/sdk": "^21.3.0",
+    "@nuxt/fonts": "^0.14.0",
     "@nuxt/ui": "^4.7.1",
     "@vueuse/core": "^14.2.1",
     "@vueuse/nuxt": "^14.2.1",
