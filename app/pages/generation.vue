@@ -22,7 +22,7 @@
       </div>
       <p class="text-xl font-semibold">Images/Textes à fournir :</p>
       <!-- Template Form -->
-      <GenerationTemplateForm :inputs="template.inputs" />
+      <GenerationTemplateForm :inputs="template.inputs" :template-id="template.id" />
     </div>
 
     <div v-if="showMissingTemplateModal" class="mx-auto md:max-w-md">

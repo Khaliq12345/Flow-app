@@ -1,5 +1,19 @@
 <template>
   <div class="space-y-6">
+    <!-- Project Name Input -->
+    <div>
+      <label for="projectName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Nom du projet
+      </label>
+      <input
+        id="projectName"
+        v-model="projectName"
+        type="text"
+        placeholder="Entrez le nom de votre projet..."
+        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+      />
+    </div>
+
     <!-- Images Grid -->
     <div
       v-if="imageInputs.length > 0"
@@ -54,18 +68,17 @@
         :description="field.description"
         class="group hover:border-primary-400 transition-colors"
       >
-        <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-          <UTextarea
-            :model-value="formData[field.name]"
-            :placeholder="`Entrez ${field.description.toLowerCase()}...`"
-            autoresize
-            variant="none"
-            :ui="{
-              base: 'resize-none bg-transparent text-sm outline-none p-0',
-            }"
-            @update:model-value="updateField(field.name, $event)"
-          />
-        </div>
+        <UTextarea
+          :model-value="formData[field.name]"
+          :placeholder="`Entrez ${field.description.toLowerCase()}...`"
+          variant="none"
+          :maxrows="10"
+          :ui="{
+            root: 'p-2 rounded-lg bg-gray-50 dark:bg-gray-800 ',
+            base: 'resize-none text-sm outline-none p-0 min-h-40',
+          }"
+          @update:model-value="updateField(field.name, $event)"
+        />
       </UPageCard>
     </div>
 
@@ -88,8 +101,11 @@ import { useAuthStore } from "~/stores/auth";
 
 const props = defineProps<{
   inputs: TemplateInput[];
+  templateId: string;
 }>();
 const formData = ref<Record<string, string>>({});
+const fileData = ref<Record<string, File>>({});
+const projectName = ref("");
 
 const emit = defineEmits<{
   "update:formData": [value: Record<string, string>];
@@ -112,6 +128,10 @@ function handleFileChange(fieldName: string, event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
+  // Store the actual file object
+  fileData.value[fieldName] = file;
+
+  // Create preview for display
   const reader = new FileReader();
   reader.onload = (e) => updateField(fieldName, e.target?.result as string);
   reader.readAsDataURL(file);
@@ -123,13 +143,15 @@ function autoExpand(event: Event) {
   textarea.style.height = Math.min(textarea.scrollHeight, 500) + "px";
 }
 
+const { createGeneration } = useGenerations();
 const { payAndRedirect } = usePayment();
 const authStore = useAuthStore();
-
 const paymentLoading = ref(false);
 
-async function testPayment() {
-  paymentLoading.value = true;
+const folderId = "475dd14c-2861-4608-a06e-fadcd807a7b6";
+const userId = "4ec09aeb-a2c6-4650-94da-8393e86d1a54";
+
+async function processPayment() {
   try {
     // Hydrate le store avec un utilisateur fictif
     authStore.setUser({
@@ -150,18 +172,43 @@ async function testPayment() {
       callback_url: "http://localhost:3000/payments/callback",
     });
 
-    console.log("[testPayment] Résultat:", result);
+    console.log("[processPayment] Résultat:", result);
     return result;
   } catch (error) {
-    console.error("[testPayment] Erreur:", error);
+    console.error("[processPayment] Erreur:", error);
     throw error;
-  } finally {
-    paymentLoading.value = false;
   }
 }
 
 async function foo() {
-  const output = await testPayment();
-  console.log("output", output);
+  paymentLoading.value = true;
+  try {
+    // await processPayment();
+
+    // Separate text fields from image previews
+    const textFields: Record<string, string> = {};
+    for (const [fieldName, value] of Object.entries(formData.value)) {
+      if (!fileData.value[fieldName]) {
+        textFields[fieldName] = value;
+      }
+    }
+
+    const result = await createGeneration(
+      props.templateId,
+      folderId,
+      userId,
+      projectName.value,
+      fileData.value,
+      textFields,
+    );
+
+    console.log("[foo] Génération créée:", result);
+    return result;
+  } catch (error) {
+    console.error("[foo] Erreur:", error);
+    throw error;
+  } finally {
+    paymentLoading.value = false;
+  }
 }
 </script>
