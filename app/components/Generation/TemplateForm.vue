@@ -3,12 +3,13 @@
     <!-- Project Name Input -->
     <div>
       <label for="projectName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-        Nom du projet
+        Nom du projet <span class="text-red-500">*</span>
       </label>
       <input
         id="projectName"
         v-model="projectName"
         type="text"
+        required
         placeholder="Entrez le nom de votre projet..."
         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
       />
@@ -143,7 +144,7 @@ function autoExpand(event: Event) {
   textarea.style.height = Math.min(textarea.scrollHeight, 500) + "px";
 }
 
-const { createGeneration } = useGenerations();
+const { createGeneration, deleteGeneration } = useGenerations();
 const { payAndRedirect } = usePayment();
 const authStore = useAuthStore();
 const paymentLoading = ref(false);
@@ -182,8 +183,27 @@ async function processPayment() {
 
 async function foo() {
   paymentLoading.value = true;
+  let generationId: string | null = null;
+
   try {
-    // await processPayment();
+    // Validate project name
+    if (!projectName.value || projectName.value.trim() === "") {
+      throw new Error("Le nom du projet est requis");
+    }
+
+    // Validate all image inputs are filled
+    for (const field of imageInputs.value) {
+      if (!fileData.value[field.name]) {
+        throw new Error(`L'image "${field.name}" est requise`);
+      }
+    }
+
+    // Validate all text inputs are filled
+    for (const field of textInputs.value) {
+      if (!formData.value[field.name] || formData.value[field.name].trim() === "") {
+        throw new Error(`Le champ "${field.name}" est requis`);
+      }
+    }
 
     // Separate text fields from image previews
     const textFields: Record<string, string> = {};
@@ -193,19 +213,38 @@ async function foo() {
       }
     }
 
-    const result = await createGeneration(
+    // Step 1: Create generation and upload files
+    const generationResult = await createGeneration(
       props.templateId,
       folderId,
       userId,
-      projectName.value,
+      projectName.value.trim(),
       fileData.value,
       textFields,
     );
 
-    console.log("[foo] Génération créée:", result);
-    return result;
+    generationId = generationResult.generationId;
+    console.log("[foo] Génération créée:", generationId);
+
+    // Step 2: Process payment
+    await processPayment();
+
+    console.log("[foo] Paiement réussi pour la génération:", generationId);
+    return generationResult;
   } catch (error) {
     console.error("[foo] Erreur:", error);
+
+    // If generation was created but payment failed, delete it
+    if (generationId) {
+      console.log("[foo] Suppression de la génération suite à l'échec du paiement:", generationId);
+      const deleted = await deleteGeneration(generationId);
+      if (deleted) {
+        console.log("[foo] Génération supprimée avec succès");
+      } else {
+        console.error("[foo] Échec de la suppression de la génération");
+      }
+    }
+
     throw error;
   } finally {
     paymentLoading.value = false;

@@ -2,6 +2,8 @@ import type {
   Generations,
   GenerationMedia,
   OutputMedia,
+  CreateGenerationResponse,
+  DeleteGenerationResponse,
 } from "~/types/generations";
 
 export default () => {
@@ -85,7 +87,7 @@ export default () => {
     projectName: string,
     fileData: Record<string, File>,
     textFields: Record<string, string>,
-  ) => {
+  ): Promise<CreateGenerationResponse> => {
     try {
       const formData = new FormData();
 
@@ -115,7 +117,7 @@ export default () => {
       }
 
       // Send to API
-      const result = await $fetch("/api/generation/add", {
+      const result = await $fetch<CreateGenerationResponse>("/api/generation/add", {
         method: "POST",
         body: formData,
       });
@@ -127,10 +129,26 @@ export default () => {
     }
   };
 
+  /**
+   * Supprime une génération et ses fichiers associés
+   */
+  const deleteGeneration = async (generationId: string): Promise<boolean> => {
+    try {
+      await $fetch<DeleteGenerationResponse>(`/api/generations/${generationId}`, {
+        method: "DELETE",
+      });
+      return true;
+    } catch (error) {
+      console.error("Error deleting generation:", error);
+      return false;
+    }
+  };
+
   return {
     fetchGenerations,
     fetchGenerationsCount,
     fetchGenerationsById,
     createGeneration,
+    deleteGeneration,
   };
 };
