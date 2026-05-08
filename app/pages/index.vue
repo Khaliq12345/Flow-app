@@ -27,15 +27,16 @@
     </div>
 
     <!-- Template Lists Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <Loading v-if="loading" />
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
       <HomeTemplateList
         title="Modèles Vidéos"
-        :items="popularTemplates"
+        :items="videoTemplates"
         view-more-link="/template/video"
       />
       <HomeTemplateList
         title="Modèles Images"
-        :items="recentTemplates"
+        :items="imageTemplates"
         view-more-link="/template/image"
       />
     </div>
@@ -43,51 +44,24 @@
 </template>
 
 <script lang="ts" setup>
-import type { TemplateListItem } from "~/types/home";
+import type { Template } from "~/types/template";
 
 const title = gretting() + ", Matthiew !";
+const { fetchTemplates } = useTemplates();
 
-const popularTemplates: TemplateListItem[] = [
-  {
-    name: "Cinematic Pro",
-    description: "Vidéos haute résolution, mouvements fluides.",
-    icon: "i-lucide-film",
-    to: "/generation?templateId=GrzDrsoszTJaZvPhKd72CFA2",
-  },
-  {
-    name: "Anime Motion",
-    description: "Style animation japonaise dynamique.",
-    icon: "i-lucide-sparkles",
-    to: "/generation?templateId=Xk92LmPqR8YtUeWzA1BcDeF3",
-  },
-  {
-    name: "3D Render",
-    description: "Rendus architecturaux et produits.",
-    icon: "i-lucide-box",
-    to: "/generation?templateId=QwErTyUiOp1234567890ZxCv",
-  },
-];
+const loading = ref(true);
+const videoTemplates = ref<Template[]>([]);
+const imageTemplates = ref<Template[]>([]);
 
-const recentTemplates: TemplateListItem[] = [
-  {
-    name: "Portrait Pro",
-    description: "Portrait professionnel et élégant.",
-    icon: "i-lucide-user",
-    to: "/generation?templateId=AsDfGhJkL0987654321MnBv",
-  },
-  {
-    name: "Avatar Style",
-    description: "Avatar personnalisé unique.",
-    icon: "i-lucide-smile",
-    to: "/generation?templateId=ZxCvBnMaSdFgHjKlQwErTy12",
-  },
-  {
-    name: "Banner Web",
-    description: "Bannière web professionnelle.",
-    icon: "i-lucide-layout",
-    to: "/generation?templateId=PlOkMnIjUhYgTfRdEsWaQx09",
-  },
-];
+onMounted(async () => {
+  const [video, image] = await Promise.all([
+    fetchTemplates("video", 3, 0),
+    fetchTemplates("image", 3, 0),
+  ]);
+  videoTemplates.value = video;
+  imageTemplates.value = image;
+  loading.value = false;
+});
 </script>
 
 <style></style>
