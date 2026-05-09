@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
     }
 
     const token = await transaction.generateToken();
-    console.log("[payment/transactions/token.post] Token généré, URL:", token?.url);
     if (!token?.url) {
       throw createError({
         statusCode: 502,

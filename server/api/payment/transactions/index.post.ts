@@ -12,13 +12,9 @@ export default defineEventHandler(async (event) => {
       currency: { iso: transaction.currency ?? "XOF" },
       callback_url: transaction.callback_url,
       customer: { id: fedapayId },
-      custom_metadata: { templateId: "someId", generationId: "someId" },
+      custom_metadata: transaction.custom_metadata || {},
     });
 
-    console.log(
-      "[payment/transactions/index.post] Transaction créée, ID:",
-      fedapayTransaction.id,
-    );
     return fedapayTransaction.id;
   } catch (err: any) {
     // Laisser passer les erreurs H3 (createError) telles quelles

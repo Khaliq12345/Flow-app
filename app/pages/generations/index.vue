@@ -29,7 +29,7 @@ const UButton = resolveComponent("UButton");
 const loading = ref(true);
 const page = ref(1);
 const total = ref(0);
-const limit = 4;
+const limit = 6;
 
 const generations = ref<Generations[]>([]);
 
@@ -37,6 +37,7 @@ const statusLabels: Record<string, string> = {
   completed: "Terminé",
   failed: "Échoué",
   pending: "En attente",
+  payment_pending: "Paiement en attente",
 };
 
 const columns: TableColumn<Generations>[] = [
@@ -54,6 +55,7 @@ const columns: TableColumn<Generations>[] = [
           completed: "success" as const,
           failed: "error" as const,
           pending: "warning" as const,
+          payment_pending: "error" as const,
         }[status] ?? ("neutral" as const);
 
       return h(

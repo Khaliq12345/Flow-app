@@ -4,6 +4,9 @@ export interface PaymentPayload {
   currency?: string;
   phone_country?: string;
   callback_url?: string;
+  generationId?: string;
+  templateId?: string;
+  userId?: string;
 }
 
 export interface PaymentResult {
@@ -31,6 +34,11 @@ export interface CreateTransactionPayload {
   amount: number;
   currency?: string;
   callback_url: string;
+  custom_metadata?: {
+    generationId?: string;
+    templateId?: string;
+    userId?: string;
+  };
 }
 
 export interface FedapayCustomer {
@@ -42,4 +50,20 @@ export interface FedapayCustomer {
     number: string;
     country: string;
   };
+}
+
+export interface FedapayTransaction {
+  id: number;
+  status: string;
+  amount: number;
+  description: string;
+  currency: {
+    iso: string;
+  };
+  custom_metadata?: {
+    generationId?: string;
+    templateId?: string;
+    userId?: string;
+  };
+  [key: string]: any;
 }

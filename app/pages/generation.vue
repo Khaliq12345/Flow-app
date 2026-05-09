@@ -46,7 +46,6 @@ const showMissingTemplateModal = ref(!template);
 async function getTemplate() {
   loading.value = true;
   const result = await fetchTemplateById(templateId);
-  console.log("Template fetched:", result);
 
   if (result) {
     template.value = result;

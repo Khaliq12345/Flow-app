@@ -1,11 +1,9 @@
-import { readItems, updateItem } from "@directus/sdk";
+import { readItems } from "@directus/sdk";
 import { useDirectusAdmin } from "~~/server/utils/directus";
 
 export default defineEventHandler(async (event) => {
   try {
     const email = getQuery(event).email as string;
-
-    console.log("[payment/users/fedaid.get] Recherche du user_folder pour email:", email);
 
     const folders = await useDirectusAdmin().request(
       readItems("user_folder", {
