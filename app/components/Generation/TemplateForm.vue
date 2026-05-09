@@ -70,15 +70,14 @@
     </div>
 
     <!-- Generate Button -->
-    <div class="flex justify-end pt-4">
-      <UButton
-        label="Générer le contenu"
-        icon="i-lucide-sparkles"
-        color="primary"
-        size="lg"
-        @click="$emit('generate')"
-      />
-    </div>
+
+    <UButton
+      label="Générer le contenu"
+      icon="i-lucide-sparkles"
+      color="primary"
+      size="lg"
+      @click="$emit('generate')"
+    />
   </div>
 </template>
 

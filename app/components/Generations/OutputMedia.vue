@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-2">
-    <h2 class="text-lg sm:text-2xl font-semibold">Média généré</h2>
+    <h2 class="text-lg sm:text-2xl">Média généré</h2>
     <div class="w-full">
       <video
         v-if="is_video"
