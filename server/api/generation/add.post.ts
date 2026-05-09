@@ -9,6 +9,7 @@ import {
 export default defineEventHandler(async (event) => {
   try {
     const formData = await readMultipartFormData(event);
+    console.log("formData", formData);
 
     if (!formData) {
       throw createError({
@@ -25,6 +26,8 @@ export default defineEventHandler(async (event) => {
 
     const directus = useDirectusAdmin();
 
+    console.log("parsedData", parsedData);
+
     // Create folders and upload files
     const { projectFolder, inputsFolder } = await createGenerationFolders(
       directus,
@@ -34,13 +37,17 @@ export default defineEventHandler(async (event) => {
       parsedData.textFile,
     );
 
+    console.log("projectFolder", projectFolder);
+    console.log("inputsFolder", inputsFolder);
+
     // Create generation record
     const generation = await createGenerationRecord(
       directus,
       parsedData.projectName!,
       parsedData.templateId!,
       parsedData.userId!,
-      inputsFolder.id,
+      projectFolder.id,
+      parsedData.isSkippingPayment || false,
     );
 
     return {

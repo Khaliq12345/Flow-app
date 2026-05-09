@@ -3,9 +3,12 @@ import { useDirectusAdmin } from "~~/server/utils/directus";
 
 export default defineEventHandler(async (event) => {
   try {
+    const { userId } = getQuery(event);
     const count = await useDirectusAdmin().request(
       readItems("generations", {
-        filter: {},
+        filter: {
+          user_id: userId as string,
+        },
         aggregate: { count: "*" },
       }),
     );

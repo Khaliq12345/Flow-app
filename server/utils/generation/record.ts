@@ -6,7 +6,8 @@ export async function createGenerationRecord(
   projectName: string,
   templateId: string,
   userId: string,
-  inputsFolderId: string,
+  parentFolderId: string,
+  isSkippingPayment: boolean,
 ) {
   const { createItem } = await import("@directus/sdk");
 
@@ -14,9 +15,9 @@ export async function createGenerationRecord(
     createItem("generations", {
       name: projectName,
       template_id: templateId,
-      user_id: { id: userId },
-      input_media: inputsFolderId,
-      status: "payment_pending",
+      user_id: userId,
+      input_media: parentFolderId,
+      payment_status: isSkippingPayment ? "paid" : "pending",
     }),
   );
 

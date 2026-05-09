@@ -8,11 +8,6 @@ export const mainNavItems: NavigationMenuItem[] = [
     exact: true,
   },
   {
-    label: "Médias",
-    icon: "i-lucide-image",
-    to: "/medias",
-  },
-  {
     label: "Modèles",
     icon: "i-lucide-box",
     to: "/template",
@@ -29,12 +24,6 @@ export const mainNavItems: NavigationMenuItem[] = [
         to: "/template/video",
       },
     ],
-  },
-  {
-    label: "Historique",
-    icon: "i-lucide-credit-card",
-    to: "/payments/history",
-    inPopover: true,
   },
   {
     label: "Générations",

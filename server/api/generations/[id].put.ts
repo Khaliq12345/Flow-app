@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     // Update status to pending and set user_id
     const updatedGeneration = await directus.request(
       updateItem("generations", generationId, {
-        status: "pending",
+        payment_status: "paid",
       }),
     );
 

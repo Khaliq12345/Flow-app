@@ -16,6 +16,7 @@ export function parseGenerationFormData(
   let userId: string | null = null;
   let projectName: string | null = null;
   let textFile: { filename: string; data: Buffer; type: string } | null = null;
+  let isSkippingPayment: boolean | null = null;
 
   for (const part of formData) {
     const partName = part.name;
@@ -51,6 +52,12 @@ export function parseGenerationFormData(
       continue;
     }
 
+    if (partName === "isSkippingPayment") {
+      isSkippingPayment = part.data.toString("utf-8") === "true";
+      console.log("isSkippingPayment", isSkippingPayment);
+      continue;
+    }
+
     if (part.filename) {
       files[partName] = {
         filename: part.filename,
@@ -67,5 +74,6 @@ export function parseGenerationFormData(
     userId,
     projectName,
     textFile,
+    isSkippingPayment,
   };
 }

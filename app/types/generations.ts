@@ -6,6 +6,7 @@ export interface Generations {
   input_media: string;
   status: "pending" | "completed" | "failed" | "payment_pending" | "approved";
   outputs_media?: string;
+  payment_status: string;
 }
 
 export interface GenerationMedia {
