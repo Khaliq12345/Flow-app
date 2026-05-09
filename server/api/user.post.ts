@@ -9,28 +9,27 @@ export default defineEventHandler(async (event) => {
   if (!userId || typeof userId !== "string") {
     throw createError({
       statusCode: 400,
-      statusMessage: "Paramètre userId manquant ou invalide",
+      statusMessage: "Missing or invalid userId parameter",
     });
   }
 
   if (!body || typeof body !== "object") {
     throw createError({
       statusCode: 400,
-      statusMessage: "Corps de la requête manquant ou invalide",
+      statusMessage: "Missing or invalid request body",
     });
   }
 
   try {
-    console.log(body);
     // 2. Execution
     const user = await adminClient.request(updateUser(userId, body));
 
     return user;
   } catch (error: any) {
-    console.error(`[Erreur API mise à jour utilisateur]: ${error.message}`);
+    console.error(`[User Update API Error]: ${error.message}`);
     throw createError({
       statusCode: error.response?.status || 500,
-      statusMessage: "Échec de la mise à jour des données utilisateur",
+      statusMessage: "Failed to update user data",
     });
   }
 });
