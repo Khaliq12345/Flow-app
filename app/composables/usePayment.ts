@@ -7,12 +7,26 @@ import type {
   CreateCustomerPayload,
   CreateTransactionPayload,
   FedapayCustomer,
+  FedapayTransaction,
 } from "~/types/payment";
 
 export function usePayment() {
   const authStore = useAuthStore();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
+  
+  /**
+   * Récupère une transaction
+   */
+  async function getTransactionById(id: number): Promise<FedapayTransaction> {
+    try {
+      const transaction = await $fetch<FedapayTransaction>(`/api/payment/transactions/${id}`);
+      return transaction;
+    } catch (err: any) {
+      console.error("Error fetching transaction id:", id, "error: ", err);
+      throw err;
+    }
+  }
 
   /**
    * Récupère le user_folder par email depuis Directus
@@ -35,9 +49,7 @@ export function usePayment() {
   /**
    * Crée un customer FedaPay
    */
-  async function createCustomer(
-    user: CreateCustomerPayload,
-  ): Promise<number> {
+  async function createCustomer(user: CreateCustomerPayload): Promise<number> {
     try {
       const customerId = await $fetch<number>("/api/payment/customers", {
         method: "POST",
@@ -91,13 +103,10 @@ export function usePayment() {
     fedapayId: number,
   ): Promise<number> {
     try {
-      const transactionId = await $fetch<number>(
-        "/api/payment/transactions",
-        {
-          method: "POST",
-          body: { transaction, fedapayId },
-        },
-      );
+      const transactionId = await $fetch<number>("/api/payment/transactions", {
+        method: "POST",
+        body: { transaction, fedapayId },
+      });
       return transactionId;
     } catch (err: any) {
       console.error("Error creating transaction:", err);
@@ -179,7 +188,9 @@ export function usePayment() {
           throw new Error("Échec de la création du customer FedaPay.");
         }
 
-        const customerVerification = await getCustomer(String(fedapayCustomerId));
+        const customerVerification = await getCustomer(
+          String(fedapayCustomerId),
+        );
         if (!customerVerification || !customerVerification.id) {
           throw new Error("Impossible de vérifier le customer FedaPay créé.");
         }
@@ -187,7 +198,7 @@ export function usePayment() {
         // Mettre à jour le user_folder avec le fedapay_id
         if (userFolder?.id) {
           await updateUserFedapayId(userFolder.id, fedapayCustomerId);
-        }        
+        }
       } else {
         fedapayCustomerId = parseInt(userFolder.fedapay_id, 10);
       }
@@ -201,6 +212,11 @@ export function usePayment() {
           callback_url:
             payload.callback_url ??
             useRuntimeConfig().public.appUrl + "/payments/callback",
+          custom_metadata: {
+            generationId: payload.generationId,
+            templateId: payload.templateId,
+            userId: payload.userId,
+          },
         },
         fedapayCustomerId,
       );
@@ -253,6 +269,7 @@ export function usePayment() {
   }
 
   return {
+    getTransactionById,
     initiatePayment,
     redirectToPayment,
     payAndRedirect,

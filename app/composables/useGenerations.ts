@@ -66,7 +66,7 @@ export default () => {
 
     entries.forEach(([fieldName, value], index) => {
       content += `${fieldName}:\n${value}`;
-      
+
       // Add two newlines between entries (except for the last one)
       if (index < entries.length - 1) {
         content += "\n\n";
@@ -117,10 +117,13 @@ export default () => {
       }
 
       // Send to API
-      const result = await $fetch<CreateGenerationResponse>("/api/generation/add", {
-        method: "POST",
-        body: formData,
-      });
+      const result = await $fetch<CreateGenerationResponse>(
+        "/api/generation/add",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       return result;
     } catch (error) {
@@ -130,13 +133,33 @@ export default () => {
   };
 
   /**
+   * Met à jour le statut d'une génération vers "pending" et définit le user_id
+   */
+  const updateGenerationStatus = async (
+    generationId: string,
+  ): Promise<boolean> => {
+    try {
+      await $fetch(`/api/generations/${generationId}`, {
+        method: "PUT",
+      });
+      return true;
+    } catch (error) {
+      console.error("Error updating generation status:", error);
+      return false;
+    }
+  };
+
+  /**
    * Supprime une génération et ses fichiers associés
    */
   const deleteGeneration = async (generationId: string): Promise<boolean> => {
     try {
-      await $fetch<DeleteGenerationResponse>(`/api/generations/${generationId}`, {
-        method: "DELETE",
-      });
+      await $fetch<DeleteGenerationResponse>(
+        `/api/generations/${generationId}`,
+        {
+          method: "DELETE",
+        },
+      );
       return true;
     } catch (error) {
       console.error("Error deleting generation:", error);
@@ -149,6 +172,7 @@ export default () => {
     fetchGenerationsCount,
     fetchGenerationsById,
     createGeneration,
+    updateGenerationStatus,
     deleteGeneration,
   };
 };

@@ -11,7 +11,13 @@ export default defineEventHandler(async (event) => {
     );
     // console.log("Total generations of type", type, ":", count[0]?.count);
     return count[0]?.count || 0;
-  } catch (error) {
-    console.error("Error fetching generations count:", error);
+  } catch (err: any) {
+    if (err.statusCode) throw err;
+
+    console.error("[generation/count] Erreur inattendue:", err?.message ?? err);
+    throw createError({
+      statusCode: 500,
+      message: `[generation/count] ${err?.message ?? "Erreur interne du serveur."}`,
+    });
   }
 });

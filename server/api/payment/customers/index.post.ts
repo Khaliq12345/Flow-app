@@ -16,8 +16,6 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    console.log("[payment/customers/index.post] Customer FedaPay créé avec ID:", custumer.id);
-
     return custumer.id as number;
   } catch (err: any) {
     // Laisser passer les erreurs H3 (createError) telles quelles

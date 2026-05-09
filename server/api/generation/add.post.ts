@@ -23,19 +23,6 @@ export default defineEventHandler(async (event) => {
     // Validate required fields
     validateGenerationData(parsedData);
 
-    console.log("[generation/add.post] Template ID:", parsedData.templateId);
-    console.log("[generation/add.post] Folder ID:", parsedData.folderId);
-    console.log("[generation/add.post] User ID:", parsedData.userId);
-    console.log("[generation/add.post] Project Name:", parsedData.projectName);
-    console.log(
-      "[generation/add.post] Fichiers images reçus:",
-      Object.keys(parsedData.files),
-    );
-    console.log(
-      "[generation/add.post] Fichier texte reçu:",
-      parsedData.textFile ? parsedData.textFile.filename : "Aucun",
-    );
-
     const directus = useDirectusAdmin();
 
     // Create folders and upload files
@@ -55,8 +42,6 @@ export default defineEventHandler(async (event) => {
       parsedData.userId!,
       inputsFolder.id,
     );
-
-    console.log("[generation/add.post] Génération créée:", generation.id);
 
     return {
       success: true,

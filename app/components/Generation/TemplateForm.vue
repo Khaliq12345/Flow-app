@@ -2,16 +2,17 @@
   <div class="space-y-6">
     <!-- Project Name Input -->
     <div>
-      <label for="projectName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label
+        for="projectName"
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
         Nom du projet <span class="text-red-500">*</span>
       </label>
-      <input
-        id="projectName"
+      <UInput
         v-model="projectName"
-        type="text"
-        required
-        placeholder="Entrez le nom de votre projet..."
-        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        color="neutral"
+        variant="subtle"
+        placeholder="Nom du projet"
       />
     </div>
 
@@ -90,7 +91,7 @@
       icon="i-lucide-sparkles"
       color="primary"
       size="lg"
-      @click="foo"
+      @click="startPayment"
       :loading="paymentLoading"
     />
   </div>
@@ -100,10 +101,17 @@
 import type { TemplateInput } from "~/types/template";
 import { useAuthStore } from "~/stores/auth";
 
+const { createGeneration, deleteGeneration } = useGenerations();
+const { payAndRedirect } = usePayment();
+const authStore = useAuthStore();
+const paymentLoading = ref(false);
+const toast = useToast();
+
 const props = defineProps<{
   inputs: TemplateInput[];
   templateId: string;
 }>();
+
 const formData = ref<Record<string, string>>({});
 const fileData = ref<Record<string, File>>({});
 const projectName = ref("");
@@ -138,70 +146,87 @@ function handleFileChange(fieldName: string, event: Event) {
   reader.readAsDataURL(file);
 }
 
-function autoExpand(event: Event) {
-  const textarea = event.target as HTMLTextAreaElement;
-  textarea.style.height = "auto";
-  textarea.style.height = Math.min(textarea.scrollHeight, 500) + "px";
-}
+const folderId = ""; // à remplacer par l'id du dossier de l'utilisateur connecté
+const userId = ""; // à remplacer par l'id de l'utilisateur connecté
 
-const { createGeneration, deleteGeneration } = useGenerations();
-const { payAndRedirect } = usePayment();
-const authStore = useAuthStore();
-const paymentLoading = ref(false);
-
-const folderId = "475dd14c-2861-4608-a06e-fadcd807a7b6";
-const userId = "4ec09aeb-a2c6-4650-94da-8393e86d1a54";
-
-async function processPayment() {
+async function processPayment(generationId: string, templateId: string) {
   try {
     // Hydrate le store avec un utilisateur fictif
     authStore.setUser({
-      id: "4ec09aeb-a2c6-4650-94da-8393e86d1a54",
-      first_name: "James",
-      last_name: "Lanha",
-      email: "james@tech2work.tech",
-      phone: "+22997491925",
-      phone_country: "BJ",
+      id: "", // à remplacer par l'id de l'utilisateur connecté
+      first_name: "", // à remplacer par le prénom de l'utilisateur connecté
+      last_name: "", // à remplacer par le nom de l'utilisateur connecté
+      email: "", // à remplacer par l'email de l'utilisateur connecté
+      phone: "", // à remplacer par le numéro de téléphone de l'utilisateur connecté
+      phone_country: "", // à remplacer par le pays de l'utilisateur connecté
     });
 
     // Appel avec une transaction fictive
     const result = await payAndRedirect({
-      amount: 100,
-      description: "Paiement test abonnement",
-      currency: "XOF",
-      phone_country: "BJ",
-      callback_url: "http://localhost:3000/payments/callback",
+      amount: 100, // à remplacer par le montant de la transaction
+      description: "Paiement test abonnement", // à remplacer par la description de la transaction
+      currency: "XOF", // à remplacer par la devise de la transaction
+      phone_country: "BJ", // à remplacer par le pays de l'utilisateur connecté
+      callback_url: "http://localhost:3000/payments/callback", // à remplacer par l'url de callback
+      generationId, // à remplacer par l'id de la génération
+      templateId, // à remplacer par l'id du template
+      userId, // à remplacer par l'id de l'utilisateur connecté
     });
 
-    console.log("[processPayment] Résultat:", result);
     return result;
   } catch (error) {
     console.error("[processPayment] Erreur:", error);
+    toast.add({
+      title: "Erreur",
+      description: "Erreur lors du traitement du paiement",
+      color: "error",
+    });
     throw error;
   }
 }
 
-async function foo() {
+async function startPayment() {
   paymentLoading.value = true;
   let generationId: string | null = null;
 
   try {
     // Validate project name
     if (!projectName.value || projectName.value.trim() === "") {
-      throw new Error("Le nom du projet est requis");
+      toast.add({
+        title: "Erreur",
+        description: "Le nom du projet est requis",
+        color: "error",
+      });
+
+      return;
     }
 
     // Validate all image inputs are filled
     for (const field of imageInputs.value) {
       if (!fileData.value[field.name]) {
-        throw new Error(`L'image "${field.name}" est requise`);
+        toast.add({
+          title: "Erreur",
+          description: `L'image "${field.name}" est requise`,
+          color: "error",
+        });
+
+        return;
       }
     }
 
     // Validate all text inputs are filled
     for (const field of textInputs.value) {
-      if (!formData.value[field.name] || formData.value[field.name].trim() === "") {
-        throw new Error(`Le champ "${field.name}" est requis`);
+      if (
+        !formData.value[field.name] ||
+        formData.value?.[field?.name]?.trim() === ""
+      ) {
+        toast.add({
+          title: "Erreur",
+          description: `Le champ "${field.name}" est requis`,
+          color: "error",
+        });
+
+        return;
       }
     }
 
@@ -224,24 +249,26 @@ async function foo() {
     );
 
     generationId = generationResult.generationId;
-    console.log("[foo] Génération créée:", generationId);
 
-    // Step 2: Process payment
-    await processPayment();
-
-    console.log("[foo] Paiement réussi pour la génération:", generationId);
-    return generationResult;
+    // Step 2: Process payment with generationId and templateId
+    await processPayment(generationId, props.templateId);
   } catch (error) {
-    console.error("[foo] Erreur:", error);
+    console.error("[startPayment] Erreur:", error);
+
+    toast.add({
+      title: "Erreur",
+      description:
+        "Une erreur est survenue lors du traitement de votre demande.",
+      color: "error",
+    });
 
     // If generation was created but payment failed, delete it
     if (generationId) {
-      console.log("[foo] Suppression de la génération suite à l'échec du paiement:", generationId);
       const deleted = await deleteGeneration(generationId);
-      if (deleted) {
-        console.log("[foo] Génération supprimée avec succès");
-      } else {
-        console.error("[foo] Échec de la suppression de la génération");
+      if (!deleted) {
+        console.error(
+          "[startPayment] Échec de la suppression de la génération",
+        );
       }
     }
 

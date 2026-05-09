@@ -13,7 +13,13 @@ export default defineEventHandler(async (event) => {
     );
 
     return generations;
-  } catch (error) {
-    console.log("Error fetching generations:", error);
+  } catch (err: any) {
+    if (err.statusCode) throw err;
+
+    console.error("[generation/fetch] Erreur inattendue:", err?.message ?? err);
+    throw createError({
+      statusCode: 500,
+      message: `[generation/fetch] ${err?.message ?? "Erreur interne du serveur."}`,
+    });
   }
 });

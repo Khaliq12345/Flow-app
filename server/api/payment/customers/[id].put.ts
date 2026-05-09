@@ -6,13 +6,6 @@ export default defineEventHandler(async (event) => {
     const userFolderId = getRouterParam(event, "id") as string;
     const { fedapayId } = await readBody(event);
 
-    console.log(
-      "[payment/customers/[id].put] Mise à jour du user_folder ID:",
-      userFolderId,
-      "avec fedapay_id:",
-      fedapayId,
-    );
-
     await useDirectusAdmin().request(
       updateItem("user_folder", userFolderId, {
         fedapay_id: String(fedapayId),

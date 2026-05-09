@@ -64,7 +64,16 @@ export default defineEventHandler(async (event) => {
     }
 
     return { generations, generationsMedias, output };
-  } catch (error) {
-    throw createError({ statusCode: 500, statusMessage: error?.message });
+  } catch (err: any) {
+    if (err.statusCode) throw err;
+
+    console.error(
+      "[generation/[id].get] Erreur inattendue:",
+      err?.message ?? err,
+    );
+    throw createError({
+      statusCode: 500,
+      message: `[generation/[id].get] ${err?.message ?? "Erreur interne du serveur."}`,
+    });
   }
 });
