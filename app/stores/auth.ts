@@ -1,47 +1,81 @@
-// stores/auth.ts
+import { readMe, refresh } from "@directus/sdk";
 import { defineStore } from "pinia";
+import type { User } from "~/types/user";
+import { useDirectusUser } from "~~/server/utils/directus";
 
-export interface AuthUser {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string; // ex: "97000000"
-  phone_country?: string; // ex: "BJ"
-}
+export const useAuthStore = defineStore(
+  "userStore",
+  () => {
+    const token = ref<string | null>(null);
+    const user = ref<User>();
+    const isAuthenticated = ref<boolean>(false);
+    const location = reactive({});
 
-export const useAuthStore = defineStore("auth", () => {
-  // ─── State ──────────────────────────────────────────────────────────────────
-  const user = ref<AuthUser | null>(null);
-  const isAuthenticated = ref(false);
+    const setUser = async (userId: any) => {
+      const { getUser } = useUser();
+      if (!userId) {
+        return;
+      } else {
+        user.value = (await getUser(userId)) as any;
+      }
+    };
 
-  // ─── Getters ────────────────────────────────────────────────────────────────
+    const setToken = (accessToken: string | null) => {
+      token.value = accessToken;
+    };
 
-  /** Retourne l'utilisateur connecté */
-  const currentUser = computed(() => user.value);
+    const setAuthenticated = async () => {
+      if (!token.value) {
+        isAuthenticated.value = false;
+        return;
+      }
+      const client = useDirectusUser(token.value);
 
-  // ─── Actions ────────────────────────────────────────────────────────────────
+      try {
+        const response = await client.request(readMe());
+        await setUser(response.id);
+        isAuthenticated.value = true;
+      } catch (err) {
+        console.warn("Token expired or invalid, attempting refresh...");
+        try {
+          // 1. Attempt to refresh the token
+          const result = await client.request(refresh());
+          console.log("RESULT REFRESH ", refresh);
+          // 2. Update your local token storage/state
+          token.value = result.access_token;
+          isAuthenticated.value = true;
 
-  /** Initialise l'utilisateur (à appeler au login ou à l'hydratation SSR) */
-  function setUser(payload: AuthUser) {
-    user.value = payload;
-    isAuthenticated.value = true;
-  }
+          console.log("Token refreshed successfully");
+        } catch (refreshErr) {
+          // 4. If refresh fails, the session is truly dead
+          console.error("Refresh failed, redirecting to login", refreshErr);
+          token.value = null;
+          isAuthenticated.value = false;
+        }
+      }
+    };
 
-  /** Déconnecte l'utilisateur et réinitialise le store */
-  function logout() {
-    user.value = null;
-    isAuthenticated.value = false;
-  }
+    const cleanUser = () => {
+      isAuthenticated.value = false;
+      user.value = undefined;
+      token.value = "";
+    };
 
-  return {
-    // state
-    user,
-    isAuthenticated,
-    // getters
-    currentUser,
-    // actions
-    setUser,
-    logout,
-  };
-});
+    const getToken = computed(() => token.value);
+
+    return {
+      isAuthenticated,
+      setUser,
+      setToken,
+      user,
+      location,
+      token,
+      setAuthenticated,
+      cleanUser,
+      getToken,
+    };
+  },
+  {
+    persist: true,
+  },
+);

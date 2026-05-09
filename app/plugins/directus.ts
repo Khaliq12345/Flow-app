@@ -8,8 +8,6 @@ import {
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
-
-  console.log(config.staticTokenPrivate);
   const directus = createDirectus(config.public.directusUrl)
     .with(rest())
     .with(staticToken(config.staticTokenPrivate));
