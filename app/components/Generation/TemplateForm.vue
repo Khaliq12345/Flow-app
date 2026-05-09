@@ -99,17 +99,21 @@
 
 <script setup lang="ts">
 import type { TemplateInput } from "~/types/template";
+import type { UserFolder } from "~/types/userfolder";
 import { useAuthStore } from "~/stores/auth";
 
 const { createGeneration, deleteGeneration } = useGenerations();
 const { payAndRedirect } = usePayment();
+const { fetchUserFolder } = useUserFolder();
 const authStore = useAuthStore();
 const paymentLoading = ref(false);
 const toast = useToast();
+const skipPayment = ref(false);
 
 const props = defineProps<{
   inputs: TemplateInput[];
   templateId: string;
+  type: string;
 }>();
 
 const formData = ref<Record<string, string>>({});
@@ -248,10 +252,34 @@ async function startPayment() {
       textFields,
     );
 
+    const folders = await fetchUserFolder(userId);
+    const userFolder = folders?.[0] ?? null;
+
+    if (props.type === "video" && (userFolder?.remaining_videos || 0) > 0) {
+      skipPayment.value = true;
+    }
+    if (props.type === "images" && (userFolder?.remaining_images || 0) > 0) {
+      skipPayment.value = true;
+    }
+
     generationId = generationResult.generationId;
 
     // Step 2: Process payment with generationId and templateId
-    await processPayment(generationId, props.templateId);
+    if (skipPayment.value) {
+      await processPayment(generationId, props.templateId);
+    }
+
+    // Step 3: Redirect to generation detail page if payment was skipped
+    if (generationId) {
+      toast.add({
+        title: "Génération créée",
+        description: "Votre génération a été créée avec succès",
+        color: "success",
+      });
+      const generationIdState = useState("generationId");
+      generationIdState.value = generationId;
+      await navigateTo("/generations/detail");
+    }
   } catch (error) {
     console.error("[startPayment] Erreur:", error);
 
