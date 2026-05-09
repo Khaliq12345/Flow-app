@@ -1,5 +1,5 @@
 import { login } from "@directus/sdk";
-import { navigateTo } from "nuxt/app";
+
 import { useDirectusAdmin } from "~~/server/utils/directus";
 
 export default defineEventHandler(async (event) => {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
         password: body.password,
       }),
     );
-    await navigateTo("/");
+
     return user;
   } catch (error) {
     console.log(`Error - ${error}`);

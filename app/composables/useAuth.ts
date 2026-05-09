@@ -31,7 +31,7 @@ export const useAuth = () => {
         body: { email, password },
       });
       authStore.setToken(loginUser.access_token);
-      console.log(authStore.token);
+      navigateTo("/");
     } catch (err: any) {
       throw err;
     } finally {
