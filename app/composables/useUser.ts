@@ -9,12 +9,30 @@ export const useUser = () => {
       });
       return user;
     } catch (err) {
-      console.error("Error fetching user:", err);
+      console.error("Erreur lors de la récupération de l'utilisateur :", err);
+      throw err;
+    }
+  };
+
+  const updateUser = async (
+    userId: string,
+    data: Partial<User>,
+  ): Promise<User> => {
+    try {
+      const user = await $fetch<User>("/api/user", {
+        method: "PATCH",
+        params: { userId },
+        body: data,
+      });
+      return user;
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour de l'utilisateur :", err);
       throw err;
     }
   };
 
   return {
     getUser,
+    updateUser,
   };
 };
