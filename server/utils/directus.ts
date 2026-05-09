@@ -6,3 +6,4 @@ export const useDirectusAdmin = () => {
     .with(rest())
     .with(staticToken(config.staticTokenPrivate));
 };
+

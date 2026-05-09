@@ -20,7 +20,7 @@
         >
           <UIcon name="i-lucide-info" class="text-gray-400 size-4 shrink-0" />
           <p class="text-xs text-gray-500 dark:text-gray-400">
-            Si vous pensez que c'est une erreur, contactez votre administrateur.
+            Si vous pensez que c'est une erreur, contactez le support de Flow.
           </p>
         </div>
 

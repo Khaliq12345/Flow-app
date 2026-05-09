@@ -36,6 +36,11 @@ export const mainNavItems: NavigationMenuItem[] = [
     to: "/payments/history",
   },
   {
+    label: "Générations",
+    icon: "i-lucide-clock",
+    to: "/generations",
+  },
+  {
     label: "Paramètres",
     icon: "i-lucide-settings",
     to: "/settings",
