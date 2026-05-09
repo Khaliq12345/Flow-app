@@ -4,7 +4,7 @@
     <!-- Header -->
     <Header
       :title="title"
-      description="Prêt à créer quelque chose d'incroyable aujourd'hui ?"
+      description="Prêt à créer quelque chose d'incroyable ?"
     />
 
     <!-- Heros -->
