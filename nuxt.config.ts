@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   ],
   vite: {
     optimizeDeps: {
-      include: ["@directus/sdk"],
+      include: ["@directus/sdk", "fedapay"],
     },
   },
   runtimeConfig: {
