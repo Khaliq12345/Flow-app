@@ -116,7 +116,27 @@ const fields = [
     },
 ];
 
-function onSubmit(event: FormSubmitEvent<Schema>) {
-    console.log(event.data);
+const { signin } = useAuth();
+const toast = useToast();
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+    try {
+        await signin(event.data.email, event.data.password);
+        toast.add({
+            title: "Connexion success",
+            description: "Vous etes connecter",
+            color: "success",
+        });
+    } catch (error: any) {
+        toast.add({
+            id: "sigin_error",
+            title: "Erreur de connexion",
+            description:
+                error.data?.message ||
+                "Une erreur est survenue lors de la connexion.",
+            icon: "i-heroicons-exclamation-circle",
+            color: "error",
+        });
+    }
 }
 </script>
