@@ -1,11 +1,9 @@
-import { updateUser } from "@directus/sdk";
+import { readUser } from "@directus/sdk";
 
 export default defineEventHandler(async (event) => {
   const adminClient = useDirectusAdmin();
   const { userId } = getQuery(event);
-  const body = await readBody(event);
 
-  // 1. Validation
   if (!userId || typeof userId !== "string") {
     throw createError({
       statusCode: 400,
@@ -13,24 +11,13 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  if (!body || typeof body !== "object") {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Corps de la requête manquant ou invalide",
-    });
-  }
-
   try {
-    console.log(body);
-    // 2. Execution
-    const user = await adminClient.request(updateUser(userId, body));
-
-    return user;
+    return await adminClient.request(readUser(userId));
   } catch (error: any) {
-    console.error(`[Erreur API mise à jour utilisateur]: ${error.message}`);
+    console.error(`[Erreur API récupération utilisateur]: ${error.message}`);
     throw createError({
       statusCode: error.response?.status || 500,
-      statusMessage: "Échec de la mise à jour des données utilisateur",
+      statusMessage: "Échec de la récupération des données utilisateur",
     });
   }
 });

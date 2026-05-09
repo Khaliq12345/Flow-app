@@ -4,6 +4,7 @@ export const useAuth = () => {
   const { $directus } = useNuxtApp();
   const authStore = useAuthStore();
   const loading = ref<boolean>(false);
+  const router = useRouter();
 
   // SIGNUP FUNCTION
   const signup = async (formData: any) => {
@@ -31,7 +32,8 @@ export const useAuth = () => {
         body: { email, password },
       });
       authStore.setToken(loginUser.access_token);
-      await navigateTo("/");
+      await router.push("/");
+      console.log("navigation complete");
     } catch (err: any) {
       throw err;
     } finally {

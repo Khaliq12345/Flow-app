@@ -7,13 +7,13 @@ export default defineEventHandler(async (event) => {
   const adminClient = useDirectusAdmin();
 
   try {
+    console.log(body);
     const user = await adminClient.request(
       login({
         email: body.email,
         password: body.password,
       }),
     );
-
     return user;
   } catch (error) {
     console.log(`Error - ${error}`);

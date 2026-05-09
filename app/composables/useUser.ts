@@ -5,7 +5,7 @@ export const useUser = () => {
     try {
       const user = await $fetch<User>("/api/user", {
         method: "GET",
-        params: { userId },
+        query: { userId },
       });
       return user;
     } catch (err) {
@@ -21,7 +21,7 @@ export const useUser = () => {
     try {
       const user = await $fetch<User>("/api/user", {
         method: "PATCH",
-        params: { userId },
+        query: { userId },
         body: data,
       });
       return user;

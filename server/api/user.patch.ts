@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
   try {
     // 2. Execution
     const user = await adminClient.request(updateUser(userId, body));
-
     return user;
   } catch (error: any) {
     console.error(`[User Update API Error]: ${error.message}`);
