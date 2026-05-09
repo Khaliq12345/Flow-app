@@ -7,3 +7,9 @@ export const useDirectusAdmin = () => {
     .with(staticToken(config.staticTokenPrivate));
 };
 
+export const useDirectusUser = (accessToken: string) => {
+  const config = useRuntimeConfig();
+  return createDirectus(config.public.directusUrl)
+    .with(rest())
+    .with(staticToken(accessToken));
+};

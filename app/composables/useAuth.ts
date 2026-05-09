@@ -2,11 +2,8 @@ import { createUser, readMe, login, logout } from "@directus/sdk";
 
 export const useAuth = () => {
   const { $directus } = useNuxtApp();
-
-  // Reactive state for the logged-in user
-  const user = useState("auth_user", () => null);
-  const loading = useState("auth_loading", () => false);
-  const error = useState("auth_error", () => null);
+  const authStore = useAuthStore();
+  const loading = ref<boolean>(false);
 
   // SIGNUP FUNCTION
   const signup = async (formData: any) => {
@@ -15,13 +12,10 @@ export const useAuth = () => {
         method: "POST",
         body: formData,
       });
-
       // 2. Log in
-      // await $directus.login(formData.email, formData.password);
-
+      await signin(formData.email, formData.password);
       // 3. Update local state
-      // user.value = await $directus.request(readMe());
-      navigateTo("/dashboard");
+      navigateTo("/template");
     } catch (err) {
       console.error("Signup/Login failed:", err);
       throw err;
@@ -32,11 +26,13 @@ export const useAuth = () => {
   const signin = async (email: string, password: string) => {
     loading.value = true;
     try {
-      await $directus.request(login({ email, password }));
-      // Fetch the full user object and store it in state
-      user.value = await $directus.request(readMe());
+      const loginUser = await $fetch("/api/auth/login", {
+        method: "POST",
+        body: { email, password },
+      });
+      authStore.setToken(loginUser.access_token);
+      console.log(authStore.token);
     } catch (err: any) {
-      error.value = "Invalid email or password";
       throw err;
     } finally {
       loading.value = false;
@@ -52,9 +48,7 @@ export const useAuth = () => {
   };
 
   return {
-    user,
     loading,
-    error,
     signup,
     signin,
     Userlogout,

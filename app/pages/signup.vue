@@ -46,7 +46,7 @@
                             :ui="{ label: labelClass }"
                         >
                             <UInput
-                                v-model="state.nom"
+                                v-model="state.last_name"
                                 placeholder="Dupont"
                                 class="w-full"
                                 :ui="{ base: inputClass }"
@@ -59,7 +59,7 @@
                             :ui="{ label: labelClass }"
                         >
                             <UInput
-                                v-model="state.prenom"
+                                v-model="state.first_name"
                                 placeholder="Jean"
                                 class="w-full"
                                 :ui="{ base: inputClass }"
@@ -140,24 +140,23 @@
         </div>
     </div>
 </template>
+
 <script setup lang="ts">
 definePageMeta({ layout: false });
 
 import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
+// 1. Initialize the toast composable
+const toast = useToast();
+
 const schema = z
     .object({
-        nom: z.string("Nom obligatoire").min(2, "Minimum 2 caractères"),
-        prenom: z.string("Prénom obligatoire").min(2, "Minimum 2 caractères"),
-        email: z.email("Email obligatoire"),
-
-        password: z
-            .string("Mot de passe obligatoire")
-            .min(6, "Minimum 6 caractères"),
-        confirm: z
-            .string("Confirmation du mot de passe obligatoire")
-            .min(6, "Minimum 6 caractères"),
+        first_name: z.string().min(2, "Minimum 2 caractères"),
+        last_name: z.string().min(2, "Minimum 2 caractères"),
+        email: z.email("Email valide obligatoire"),
+        password: z.string().min(6, "Minimum 6 caractères"),
+        confirm: z.string().min(6, "Minimum 6 caractères"),
     })
     .refine((data) => data.password === data.confirm, {
         message: "Les mots de passe ne correspondent pas",
@@ -183,8 +182,25 @@ const videos = [
 const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
 
 const { signup } = useAuth();
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-    console.log(event.data);
-    await signup(event.data);
+    try {
+        await signup(event.data);
+        toast.add({
+            title: "Compte créé !",
+            description: "Vous pouvez maintenant vous connecter.",
+            color: "success",
+        });
+    } catch (error: any) {
+        toast.add({
+            id: "signup_error",
+            title: "Erreur d'inscription",
+            description:
+                error.data?.message ||
+                "Une erreur est survenue lors de la création de votre compte.",
+            icon: "i-heroicons-exclamation-circle",
+            color: "error",
+        });
+    }
 }
 </script>

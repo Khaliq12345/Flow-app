@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
   ],
+  vite: {
+    optimizeDeps: {
+      include: ["@directus/sdk"],
+    },
+  },
   runtimeConfig: {
     staticTokenPrivate: "",
     fedapayToken: "",
