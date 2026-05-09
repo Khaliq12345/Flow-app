@@ -6,6 +6,7 @@ import {
   readFiles,
   readFolders,
   readItem,
+  deleteFolders,
 } from "@directus/sdk";
 
 export default defineEventHandler(async (event) => {
@@ -67,14 +68,10 @@ export default defineEventHandler(async (event) => {
       );
     }
 
-    // 4. Supprimer le dossier inputs
-    await directus.request(deleteFolder(inputsFolderId));
-    console.log("[generation/delete] Dossier inputs supprimé");
-
-    // 5. Supprimer le dossier projet
-    if (projectFolderId) {
-      await directus.request(deleteFolder(projectFolderId));
-      console.log("[generation/delete] Dossier projet supprimé");
+    // 4. Supprimer le dossier
+    if (projectFolderId && inputsFolderId) {
+      await directus.request(deleteFolders([projectFolderId, inputsFolderId]));
+      console.log("[generation/delete] Dossier projet et inputs supprimé");
     }
 
     // 6. Supprimer la génération

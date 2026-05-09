@@ -1,22 +1,23 @@
 import { readMe, refresh } from "@directus/sdk";
 import { defineStore } from "pinia";
+import type { User } from "~/types/user";
 import { useDirectusUser } from "~~/server/utils/directus";
 
 export const useAuthStore = defineStore(
   "userStore",
   () => {
     const token = ref<string | null>(null);
-    const user = ref({});
+    const user = ref<User>();
     const isAuthenticated = ref<boolean>(false);
     const location = reactive({});
 
-    const setUser = (person: any) => {
-      user.value = person;
-      return true;
-    };
-
-    const updateUser = (obj: object) => {
-      Object.assign(user.value, obj);
+    const setUser = async (userId: any) => {
+      const { getUser } = useUser();
+      if (!userId) {
+        return;
+      } else {
+        user.value = (await getUser(userId)) as any;
+      }
     };
 
     const setToken = (accessToken: string | null) => {
@@ -31,8 +32,8 @@ export const useAuthStore = defineStore(
       const client = useDirectusUser(token.value);
 
       try {
-        const user = await client.request(readMe());
-        console.log("USER ", user);
+        const response = await client.request(readMe());
+        await setUser(response.id);
         isAuthenticated.value = true;
       } catch (err) {
         console.warn("Token expired or invalid, attempting refresh...");
@@ -55,12 +56,8 @@ export const useAuthStore = defineStore(
     };
 
     const cleanUser = () => {
-      const access = useCookie("access_token");
-      const refresh = useCookie("refresh_token");
-      access.value = null;
-      refresh.value = null;
       isAuthenticated.value = false;
-      user.value = {};
+      user.value = undefined;
       token.value = "";
     };
 
@@ -75,7 +72,6 @@ export const useAuthStore = defineStore(
       token,
       setAuthenticated,
       cleanUser,
-      updateUser,
       getToken,
     };
   },

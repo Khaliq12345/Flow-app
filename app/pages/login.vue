@@ -54,6 +54,7 @@
                                 </UButton>
                             </p>
                             <UButton
+                                :loading="pending"
                                 block
                                 variant="outline"
                                 to="/signup"
@@ -84,17 +85,6 @@ const videos = [
     "https://www.pexels.com/fr-fr/download/video/32072019/",
     "https://www.pexels.com/fr-fr/download/video/35626338/",
 ];
-
-// Vidéo sélectionnée aléatoirement au montage du composant
-const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
-
-const schema = z.object({
-    email: z.email("Email invalide"),
-    password: z.string("Mot de passe invalide").min(6, "Minimum 6 caractères"),
-});
-
-type Schema = z.output<typeof schema>;
-
 const fields = [
     {
         name: "email",
@@ -115,11 +105,22 @@ const fields = [
         },
     },
 ];
+const schema = z.object({
+    email: z.email("Email invalide"),
+    password: z.string("Mot de passe invalide").min(6, "Minimum 6 caractères"),
+});
+
+// Vidéo sélectionnée aléatoirement au montage du composant
+const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
+
+type Schema = z.output<typeof schema>;
 
 const { signin } = useAuth();
 const toast = useToast();
+const pending = ref(false);
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+    pending.value = true;
     try {
         await signin(event.data.email, event.data.password);
         toast.add({
@@ -137,6 +138,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             icon: "i-heroicons-exclamation-circle",
             color: "error",
         });
+    } finally {
+        pending.value = false;
     }
 }
 </script>
