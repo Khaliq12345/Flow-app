@@ -1,4 +1,5 @@
 import { uploadFileToDirectus } from "./uploader";
+import { createFolder } from "@directus/sdk";
 
 /**
  * Create folder structure and upload files
@@ -10,8 +11,6 @@ export async function createGenerationFolders(
   files: Record<string, { filename: string; data: Buffer; type: string }>,
   textFile: { filename: string; data: Buffer; type: string } | null,
 ) {
-  const { createFolder } = await import("@directus/sdk");
-
   // Create project folder
   const projectFolder = await directus.request(
     createFolder({
