@@ -16,9 +16,14 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     staticTokenPrivate: "",
+    fedapayToken: "",
+    fedapayMode: "",
     public: {
       staticToken: "",
       directusUrl: "",
     },
+  },
+  fonts: {
+    provider: "google",
   },
 });

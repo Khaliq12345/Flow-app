@@ -1,7 +1,9 @@
 <template>
   <div class="space-y-3">
     <div class="px-4 md:px-6 flex items-center justify-between">
-      <h3 class="text-lg md:text-2xl font-semibold text-gray-900 dark:text-white">
+      <h3
+        class="text-lg md:text-2xl font-semibold text-gray-900 dark:text-white"
+      >
         {{ title }}
       </h3>
       <UButton
@@ -16,18 +18,34 @@
     </div>
     <UPageList divide>
       <UPageCard
-        v-for="(item, index) in items"
-        :key="index"
+        v-for="item in items"
+        :key="item.id"
         variant="ghost"
-        :to="item.to"
+        :to="`/generation?templateId=${item.id}`"
       >
         <template #body>
           <div class="w-full flex items-center gap-4">
-            <!-- Icône / Thumbnail -->
+            <!-- Preview Image/Video -->
             <div
-              class="w-12 h-12 rounded-xl bg-gray-900 dark:bg-gray-800 flex items-center justify-center shrink-0"
+              class="w-12 h-12 rounded-xl overflow-hidden bg-gray-900 dark:bg-gray-800 flex items-center justify-center shrink-0"
             >
-              <UIcon :name="item.icon" class="w-6 h-6 text-white" />
+              <video
+                ref="video"
+                v-if="item.type === 'video'"
+                :src="mediaLink(item.preview)"
+                :alt="item.name"
+                class="w-full h-full object-cover"
+                muted
+                @loadedmetadata="
+                  (e) => seekToPreview(e.currentTarget as HTMLVideoElement)
+                "
+              />
+              <img
+                v-else
+                :src="mediaLink(item.preview)"
+                :alt="item.name"
+                class="w-full h-full object-cover"
+              />
             </div>
 
             <!-- Texte -->
@@ -48,7 +66,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { HomeTemplateListProps } from "~/types/home";
+import type { Template } from "~/types/template";
 
-const props = defineProps<HomeTemplateListProps>();
+const props = defineProps<{
+  title: string;
+  items: Template[];
+  viewMoreLink: string;
+}>();
+
+const seekToPreview = (video: HTMLVideoElement) => {
+  video.currentTime = 1.5;
+};
 </script>

@@ -1,2 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+.dark {
+  /* Background for Dark Mode */
+  --ui-bg: black;
+}
+
+.rootdiv {
+  @apply w-full px-4 pt-2 pb-20 md:pb-5 overflow-y-auto space-y-4 2xl:mx-auto 2xl:max-w-6xl 2xl:[scrollbar-width:none];
+}
+
+.templategrid {
+  @apply grid grid-cols-2 md:grid-cols-3 gap-4;
+}
+
+@font-face {
+  font-family: "Chillax";
+  src: url("/fonts/Chillax-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --font-sans: "Chillax", ui-sans-serif, system-ui;
+}
