@@ -55,6 +55,14 @@
                             <UIcon :name="item?.icon" class="size-5 shrink-0" />
                             <span class="text-sm">{{ item?.label }}</span>
                         </NuxtLink>
+                        <UButton
+                            variant="outline"
+                            color="error"
+                            @click="cleanUser()"
+                            to="/login"
+                            icon="i-lucide-log-out"
+                            >Logout</UButton
+                        >
                     </div>
                 </template>
             </UPopover>
@@ -65,6 +73,7 @@
 <script setup lang="ts">
 const route = useRoute();
 
+const { cleanUser } = useAuthStore();
 // Shared classes for the bottom bar triggers
 const navButtonClasses =
     "flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors";
