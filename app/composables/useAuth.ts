@@ -13,10 +13,6 @@ export const useAuth = () => {
         method: "POST",
         body: formData,
       });
-      // 2. Log in
-      await signin(formData.email, formData.password);
-      // 3. Update local state
-      navigateTo("/template");
     } catch (err) {
       console.error("Signup/Login failed:", err);
       throw err;
@@ -41,18 +37,61 @@ export const useAuth = () => {
     }
   };
 
-  // LOGOUT FUNCTION
-  const Userlogout = async () => {
-    await $directus.request(logout());
-    user.value = null;
-    // Optional: Redirect to home/login
-    navigateTo("/login");
+  // VErify user email when they register
+  const verifyEmail = async (token: string) => {
+    try {
+      await $fetch("/api/auth/verify", {
+        method: "POST",
+        query: {
+          token: token,
+        },
+      });
+      return "success";
+    } catch (err) {
+      console.error("La vérification a échoué: ", err);
+      return "error";
+    }
+  };
+
+  // Reset USer password
+  const resetPassword = async (token: string, password: string) => {
+    try {
+      const response = await $fetch("/api/auth/reset-password", {
+        method: "POST",
+        body: {
+          token: token,
+          password: password,
+        },
+      });
+      return response;
+    } catch (err) {
+      console.error("La vérification a échoué: ", err);
+      throw err;
+    }
+  };
+
+  const passwordRequest = async (): Promise<any> => {
+    try {
+      const response = await $fetch("/api/auth/request-password", {
+        method: "POST",
+        body: { email: authStore.user?.email },
+      });
+      return response;
+    } catch (err: any) {
+      console.error(
+        "La demande de réinitialisation a échoué :",
+        err.data?.message || err.message,
+      );
+      throw err;
+    }
   };
 
   return {
     loading,
     signup,
     signin,
-    Userlogout,
+    verifyEmail,
+    resetPassword,
+    passwordRequest,
   };
 };

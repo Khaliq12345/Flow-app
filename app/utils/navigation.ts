@@ -8,11 +8,6 @@ export const mainNavItems: NavigationMenuItem[] = [
     exact: true,
   },
   {
-    label: "Médias",
-    icon: "i-lucide-image",
-    to: "/medias",
-  },
-  {
     label: "Modèles",
     icon: "i-lucide-box",
     to: "/template",

@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     public: {
       staticToken: "",
       directusUrl: "",
+      url: "",
     },
   },
   fonts: {

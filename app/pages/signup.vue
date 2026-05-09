@@ -113,6 +113,7 @@
 
                     <!-- Bouton submit -->
                     <UButton
+                        :loading="pending"
                         type="submit"
                         block
                         color="neutral"
@@ -183,24 +184,35 @@ const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
 
 const { signup } = useAuth();
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+const pending = ref(false);
+
+async function onSubmit(event: FormSubmitEvent<Schema>): Promise<void> {
+    if (pending.value) return;
+
+    pending.value = true;
     try {
         await signup(event.data);
+
         toast.add({
             title: "Compte créé !",
-            description: "Vous pouvez maintenant vous connecter.",
+            description:
+                "Veuillez vérifier votre e-mails pour valider votre compte avant de vous connecter.",
             color: "success",
         });
+
+        await navigateTo("/login");
     } catch (error: any) {
         toast.add({
             id: "signup_error",
             title: "Erreur d'inscription",
             description:
                 error.data?.message ||
-                "Une erreur est survenue lors de la création de votre compte.",
+                "Une erreur est survenue lors de la création de ton compte.",
             icon: "i-heroicons-exclamation-circle",
             color: "error",
         });
+    } finally {
+        pending.value = false;
     }
 }
 </script>

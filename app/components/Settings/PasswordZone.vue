@@ -1,84 +1,68 @@
 <template>
-  <div
-    class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden"
-  >
-    <!-- Header -->
     <div
-      class="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2"
+        class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm"
     >
-      <div class="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
-        <UIcon
-          name="i-heroicons-lock-closed"
-          class="text-primary-500 w-4 h-4"
-        />
-      </div>
-      <h2 class="font-semibold text-gray-800 dark:text-white text-sm">
-        Sécurité
-      </h2>
+        <div class="p-5 flex items-center gap-3">
+            <div
+                class="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-primary-50 dark:bg-primary-900/30"
+            >
+                <UIcon
+                    name="i-heroicons-shield-check"
+                    class="text-primary-600 dark:text-primary-400 w-5 h-5"
+                />
+            </div>
+            <div>
+                <h2 class="font-bold text-gray-900 dark:text-white text-base">
+                    Sécurité
+                </h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Gérez la protection de votre compte
+                </p>
+            </div>
+        </div>
+
+        <div class="px-5 pb-5">
+            <UButton
+                label="Modifier le mot de passe"
+                icon="i-heroicons-key"
+                block
+                variant="soft"
+                color="primary"
+                :loading="isPending"
+                @click="changePassword"
+            />
+        </div>
     </div>
-
-    <!-- Champs -->
-    <div class="p-5 flex flex-col gap-4">
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-gray-600 dark:text-gray-400"
-          >Mot de passe actuel</label
-        >
-        <UInput
-          type="password"
-          placeholder="••••••••"
-          size="md"
-          v-model="password.current"
-        />
-      </div>
-
-      <USeparator />
-
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-gray-600 dark:text-gray-400"
-          >Nouveau mot de passe</label
-        >
-        <UInput
-          type="password"
-          placeholder="••••••••"
-          size="md"
-          v-model="password.new"
-        />
-      </div>
-
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-semibold text-gray-600 dark:text-gray-400"
-          >Confirmation</label
-        >
-        <UInput
-          type="password"
-          placeholder="••••••••"
-          size="md"
-          v-model="password.confirm"
-        />
-      </div>
-
-      <UButton
-        label="Modifier le mot de passe"
-        icon="i-heroicons-key"
-        block
-        color="primary"
-        class="mt-1"
-        @click="changePassword"
-      />
-    </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
-const password = ref({
-  current: "",
-  new: "",
-  confirm: "",
-});
+const { passwordRequest } = useAuth();
+const toast = useToast();
+const isPending = ref(false);
 
-const changePassword = () => {
-  console.log(password.value);
+const changePassword = async () => {
+    isPending.value = true;
+
+    try {
+        await passwordRequest();
+
+        toast.add({
+            title: "Email envoyé",
+            description:
+                "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+            icon: "i-heroicons-check-circle",
+            color: "primary",
+        });
+    } catch (error) {
+        toast.add({
+            title: "Erreur",
+            description:
+                "Impossible d'envoyer la demande. Veuillez réessayer plus tard.",
+            icon: "i-heroicons-exclamation-circle",
+            color: "error",
+        });
+    } finally {
+        isPending.value = false;
+    }
 };
 </script>
-
-<style></style>
