@@ -7,6 +7,8 @@ import type {
 } from "~/types/generations";
 
 export default () => {
+  const useAuth = useAuthStore();
+
   const fetchGenerations = async (
     limit: number,
     offset: number,
@@ -15,7 +17,7 @@ export default () => {
       const generations = await $fetch<Generations[]>(
         "/api/generations/fetch",
         {
-          query: { limit, offset },
+          query: { limit, offset, userId: useAuth.user?.id },
         },
       );
 
@@ -26,10 +28,10 @@ export default () => {
     }
   };
 
-  const fetchGenerationsCount = async (type: string): Promise<number> => {
+  const fetchGenerationsCount = async (): Promise<number> => {
     try {
       const count = await $fetch("/api/generations/count", {
-        query: { type },
+        query: { userId: useAuth.user?.id },
       });
       return parseInt(count);
     } catch (error) {
@@ -87,6 +89,7 @@ export default () => {
     projectName: string,
     fileData: Record<string, File>,
     textFields: Record<string, string>,
+    isSkippingPayment: boolean = false,
   ): Promise<CreateGenerationResponse> => {
     try {
       const formData = new FormData();
@@ -115,6 +118,9 @@ export default () => {
         const textFile = createTextFile(textFields);
         formData.append("textFile", textFile, "text.txt");
       }
+
+      // Add isSkippingPayment flag
+      formData.append("isSkippingPayment", isSkippingPayment.toString());
 
       // Send to API
       const result = await $fetch<CreateGenerationResponse>(

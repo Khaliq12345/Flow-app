@@ -17,7 +17,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // 1. Read subfolders of the given parent folder
+    // 1. Read subfolders to 
+    console.log("generations", generations);
     const subfolders = await useDirectusAdmin().request(
       readFolders({
         filter: { parent: { _eq: generations.input_media } },
@@ -25,14 +26,18 @@ export default defineEventHandler(async (event) => {
       }),
     );
 
+    console.log("subfolders", subfolders);
+
     // 2. Find the "inputs" and optional "outputs" subfolders
     const inputFolder = subfolders.find(
       (folder) => folder.name.toLowerCase() === "inputs",
     );
+    console.log("inputFolder", inputFolder);
     const outputFolder = subfolders.find(
       (folder) => folder.name.toLowerCase() === "outputs",
     );
 
+    console.log("outputFolder", outputFolder);
     if (!inputFolder) {
       throw createError({
         statusCode: 404,

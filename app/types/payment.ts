@@ -2,23 +2,15 @@ export interface PaymentPayload {
   amount: number;
   description: string;
   currency?: string;
-  phone_country?: string;
-  callback_url?: string;
+  callback_url: string;
   generationId?: string;
   templateId?: string;
-  userId?: string;
 }
 
 export interface PaymentResult {
   paymentUrl: string;
   transactionId: number;
   token: string;
-}
-
-export interface UserFolder {
-  id: string;
-  email: string;
-  fedapay_id?: string;
 }
 
 export interface CreateCustomerPayload {

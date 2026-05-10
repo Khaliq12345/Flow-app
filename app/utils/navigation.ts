@@ -26,12 +26,6 @@ export const mainNavItems: NavigationMenuItem[] = [
     ],
   },
   {
-    label: "Historique",
-    icon: "i-lucide-credit-card",
-    to: "/payments/history",
-    inPopover: true,
-  },
-  {
     label: "Générations",
     icon: "i-lucide-clock",
     to: "/generations",

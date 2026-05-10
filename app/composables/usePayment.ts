@@ -3,7 +3,6 @@ import { useAuthStore } from "~/stores/auth";
 import type {
   PaymentPayload,
   PaymentResult,
-  UserFolder,
   CreateCustomerPayload,
   CreateTransactionPayload,
   FedapayCustomer,
@@ -14,34 +13,18 @@ export function usePayment() {
   const authStore = useAuthStore();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
-  
+
   /**
    * Récupère une transaction
    */
   async function getTransactionById(id: number): Promise<FedapayTransaction> {
     try {
-      const transaction = await $fetch<FedapayTransaction>(`/api/payment/transactions/${id}`);
+      const transaction = await $fetch<FedapayTransaction>(
+        `/api/payment/transactions/${id}`,
+      );
       return transaction;
     } catch (err: any) {
       console.error("Error fetching transaction id:", id, "error: ", err);
-      throw err;
-    }
-  }
-
-  /**
-   * Récupère le user_folder par email depuis Directus
-   */
-  async function getUserFedaId(email: string): Promise<UserFolder | null> {
-    try {
-      const userFolder = await $fetch<UserFolder | null>(
-        "/api/payment/users/fedaid",
-        {
-          query: { email },
-        },
-      );
-      return userFolder;
-    } catch (err: any) {
-      console.error("Error fetching user fedaid:", err);
       throw err;
     }
   }
@@ -55,7 +38,7 @@ export function usePayment() {
         method: "POST",
         body: user,
       });
-      return customerId;
+      return customerId as number;
     } catch (err: any) {
       console.error("Error creating customer:", err);
       throw err;
@@ -155,8 +138,8 @@ export function usePayment() {
         throw new Error("Vous devez être connecté pour effectuer un paiement.");
       }
 
-      const { first_name, last_name, email, phone, phone_country } =
-        authStore.user;
+      const { first_name, last_name, email } = authStore.user;
+      const { phone, phone_country } = authStore.user?.userFolder || {};
 
       if (!first_name || !last_name || !email || !phone) {
         throw new Error(
@@ -168,19 +151,18 @@ export function usePayment() {
         throw new Error("Le montant doit être supérieur à 0.");
       }
 
-      // --- 2. Récupération du user_folder ---
-      const userFolder = await getUserFedaId(email);
-      let fedapayCustomerId: number;
+      // --- 2. Récupération du user_folder depuis le store ---
+      let fedapayCustomerId = authStore.user.userFolder.fedapay_id;
 
       // --- 3. Vérification / création du customer FedaPay ---
-      if (!userFolder?.fedapay_id) {
+      if (!fedapayCustomerId) {
         // Créer le customer FedaPay
         fedapayCustomerId = await createCustomer({
           first_name,
           last_name,
           email,
           phone,
-          phone_country: phone_country ?? payload.phone_country ?? "BJ",
+          phone_country: phone_country,
         });
 
         // Vérification du customer en le récupérant
@@ -196,11 +178,12 @@ export function usePayment() {
         }
 
         // Mettre à jour le user_folder avec le fedapay_id
-        if (userFolder?.id) {
-          await updateUserFedapayId(userFolder.id, fedapayCustomerId);
+        if (authStore.user?.userFolder?.folder_id) {
+          await updateUserFedapayId(
+            authStore.user.userFolder.folder_id,
+            fedapayCustomerId,
+          );
         }
-      } else {
-        fedapayCustomerId = parseInt(userFolder.fedapay_id, 10);
       }
 
       // --- 4. Création de la transaction ---
@@ -209,13 +192,11 @@ export function usePayment() {
           description: payload.description,
           amount: Math.round(payload.amount),
           currency: payload.currency ?? "XOF",
-          callback_url:
-            payload.callback_url ??
-            useRuntimeConfig().public.appUrl + "/payments/callback",
+          callback_url: payload.callback_url,
           custom_metadata: {
             generationId: payload.generationId,
             templateId: payload.templateId,
-            userId: payload.userId,
+            userId: authStore.user.id,
           },
         },
         fedapayCustomerId,

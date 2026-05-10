@@ -17,12 +17,17 @@
         <GenerationMediaCard
           :template="template"
           :type="template?.type"
-          :hideFooter="true"
+          
         />
       </div>
       <p class="text-xl font-semibold">Images/Textes à fournir :</p>
       <!-- Template Form -->
-      <GenerationTemplateForm :inputs="template.inputs" :template-id="template.id" />
+      <GenerationTemplateForm
+        :inputs="template.inputs"
+        :template-id="template.id"
+        :type="template.type"
+        :price="parseInt(template.price)"
+      />
     </div>
 
     <div v-if="showMissingTemplateModal" class="mx-auto md:max-w-md">

@@ -11,7 +11,12 @@
     <div v-else class="space-y-2">
       <UTable :data="generations" :columns="columns" class="w-full" />
       <!-- Pagination -->
-      <Pagination v-model:current="page" :total="total" :per-page="limit" />
+      <Pagination
+        v-model:current="page"
+        :total="total"
+        :per-page="limit"
+        @update:current="getGenerations"
+      />
     </div>
   </div>
 </template>
@@ -37,7 +42,6 @@ const statusLabels: Record<string, string> = {
   completed: "Terminé",
   failed: "Échoué",
   pending: "En attente",
-  payment_pending: "Paiement en attente",
 };
 
 const columns: TableColumn<Generations>[] = [
@@ -47,7 +51,7 @@ const columns: TableColumn<Generations>[] = [
   },
   {
     accessorKey: "status",
-    header: "Statut",
+    header: "Statut de traitement",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       const color =
@@ -94,7 +98,7 @@ async function getGenerations(newPage: number = 1) {
   loading.value = true;
   page.value = newPage;
   generations.value = await fetchGenerations(limit, (page.value - 1) * limit);
-  total.value = await fetchGenerationsCount("video");
+  total.value = await fetchGenerationsCount();
   loading.value = false;
 }
 

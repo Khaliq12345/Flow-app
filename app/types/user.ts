@@ -27,11 +27,13 @@ export interface User {
   policies: any[];
   tfa_secret: string | null;
   token: string | null;
-  folderInfo: {
-    fedapayId: string;
-    folderId: string;
-    userId: string;
+  userFolder: {
+    fedapay_id: number | null;
+    folder_id: string;
+    user_id: string;
     remaining_images: number;
     remaining_videos: number;
+    phone: string;
+    phone_country: string;
   };
 }

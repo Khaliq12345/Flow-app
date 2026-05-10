@@ -2,18 +2,14 @@
   <div class="space-y-6">
     <!-- Project Name Input -->
     <div>
-      <label
-        for="projectName"
-        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-      >
-        Nom du projet <span class="text-red-500">*</span>
-      </label>
-      <UInput
-        v-model="projectName"
-        color="neutral"
-        variant="subtle"
-        placeholder="Nom du projet"
-      />
+      <UFormField label="Email">
+        <UInput
+          v-model="projectName"
+          color="neutral"
+          variant="subtle"
+          placeholder="Nom du projet"
+        />
+      </UFormField>
     </div>
 
     <!-- Images Grid -->
@@ -91,29 +87,20 @@
       icon="i-lucide-sparkles"
       color="primary"
       size="lg"
-      @click="startPayment"
+      @click="handleSubmit"
       :loading="paymentLoading"
     />
   </div>
 </template>
-
 <script setup lang="ts">
 import type { TemplateInput } from "~/types/template";
-import type { UserFolder } from "~/types/userfolder";
-import { useAuthStore } from "~/stores/auth";
 
-const { createGeneration, deleteGeneration } = useGenerations();
-const { payAndRedirect } = usePayment();
-const { fetchUserFolder } = useUserFolder();
-const authStore = useAuthStore();
-const paymentLoading = ref(false);
-const toast = useToast();
-const skipPayment = ref(false);
 
 const props = defineProps<{
   inputs: TemplateInput[];
   templateId: string;
   type: string;
+  price: number;
 }>();
 
 const formData = ref<Record<string, string>>({});
@@ -141,168 +128,26 @@ function handleFileChange(fieldName: string, event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
-  // Store the actual file object
   fileData.value[fieldName] = file;
 
-  // Create preview for display
   const reader = new FileReader();
   reader.onload = (e) => updateField(fieldName, e.target?.result as string);
   reader.readAsDataURL(file);
 }
 
-const folderId = ""; // à remplacer par l'id du dossier de l'utilisateur connecté
-const userId = ""; // à remplacer par l'id de l'utilisateur connecté
+const { paymentLoading, startPayment } = useGenerationForm({
+  templateId: toRef(props, "templateId"),
+  type: toRef(props, "type"),
+  price: toRef(props, "price"),
+  projectName,
+});
 
-async function processPayment(generationId: string, templateId: string) {
-  try {
-    // Hydrate le store avec un utilisateur fictif
-    authStore.setUser({
-      id: "", // à remplacer par l'id de l'utilisateur connecté
-      first_name: "", // à remplacer par le prénom de l'utilisateur connecté
-      last_name: "", // à remplacer par le nom de l'utilisateur connecté
-      email: "", // à remplacer par l'email de l'utilisateur connecté
-      phone: "", // à remplacer par le numéro de téléphone de l'utilisateur connecté
-      phone_country: "", // à remplacer par le pays de l'utilisateur connecté
-    });
-
-    // Appel avec une transaction fictive
-    const result = await payAndRedirect({
-      amount: 100, // à remplacer par le montant de la transaction
-      description: "Paiement test abonnement", // à remplacer par la description de la transaction
-      currency: "XOF", // à remplacer par la devise de la transaction
-      phone_country: "BJ", // à remplacer par le pays de l'utilisateur connecté
-      callback_url: "http://localhost:3000/payments/callback", // à remplacer par l'url de callback
-      generationId, // à remplacer par l'id de la génération
-      templateId, // à remplacer par l'id du template
-      userId, // à remplacer par l'id de l'utilisateur connecté
-    });
-
-    return result;
-  } catch (error) {
-    console.error("[processPayment] Erreur:", error);
-    toast.add({
-      title: "Erreur",
-      description: "Erreur lors du traitement du paiement",
-      color: "error",
-    });
-    throw error;
-  }
-}
-
-async function startPayment() {
-  paymentLoading.value = true;
-  let generationId: string | null = null;
-
-  try {
-    // Validate project name
-    if (!projectName.value || projectName.value.trim() === "") {
-      toast.add({
-        title: "Erreur",
-        description: "Le nom du projet est requis",
-        color: "error",
-      });
-
-      return;
-    }
-
-    // Validate all image inputs are filled
-    for (const field of imageInputs.value) {
-      if (!fileData.value[field.name]) {
-        toast.add({
-          title: "Erreur",
-          description: `L'image "${field.name}" est requise`,
-          color: "error",
-        });
-
-        return;
-      }
-    }
-
-    // Validate all text inputs are filled
-    for (const field of textInputs.value) {
-      if (
-        !formData.value[field.name] ||
-        formData.value?.[field?.name]?.trim() === ""
-      ) {
-        toast.add({
-          title: "Erreur",
-          description: `Le champ "${field.name}" est requis`,
-          color: "error",
-        });
-
-        return;
-      }
-    }
-
-    // Separate text fields from image previews
-    const textFields: Record<string, string> = {};
-    for (const [fieldName, value] of Object.entries(formData.value)) {
-      if (!fileData.value[fieldName]) {
-        textFields[fieldName] = value;
-      }
-    }
-
-    // Step 1: Create generation and upload files
-    const generationResult = await createGeneration(
-      props.templateId,
-      folderId,
-      userId,
-      projectName.value.trim(),
-      fileData.value,
-      textFields,
-    );
-
-    const folders = await fetchUserFolder(userId);
-    const userFolder = folders?.[0] ?? null;
-
-    if (props.type === "video" && (userFolder?.remaining_videos || 0) > 0) {
-      skipPayment.value = true;
-    }
-    if (props.type === "images" && (userFolder?.remaining_images || 0) > 0) {
-      skipPayment.value = true;
-    }
-
-    generationId = generationResult.generationId;
-
-    // Step 2: Process payment with generationId and templateId
-    if (skipPayment.value) {
-      await processPayment(generationId, props.templateId);
-    }
-
-    // Step 3: Redirect to generation detail page if payment was skipped
-    if (generationId) {
-      toast.add({
-        title: "Génération créée",
-        description: "Votre génération a été créée avec succès",
-        color: "success",
-      });
-      const generationIdState = useState("generationId");
-      generationIdState.value = generationId;
-      await navigateTo("/generations/detail");
-    }
-  } catch (error) {
-    console.error("[startPayment] Erreur:", error);
-
-    toast.add({
-      title: "Erreur",
-      description:
-        "Une erreur est survenue lors du traitement de votre demande.",
-      color: "error",
-    });
-
-    // If generation was created but payment failed, delete it
-    if (generationId) {
-      const deleted = await deleteGeneration(generationId);
-      if (!deleted) {
-        console.error(
-          "[startPayment] Échec de la suppression de la génération",
-        );
-      }
-    }
-
-    throw error;
-  } finally {
-    paymentLoading.value = false;
-  }
+function handleSubmit() {
+  startPayment(
+    imageInputs.value,
+    textInputs.value,
+    formData.value,
+    fileData.value,
+  );
 }
 </script>

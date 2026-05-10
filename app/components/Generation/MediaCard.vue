@@ -5,9 +5,7 @@
     reverse
     :ui="{
       root: 'hover:shadow-md hover:shadow-primary transition-shadow duration-300',
-      footer: hideFooter
-        ? 'hidden'
-        : 'w-full px-2 flex items-center justify-center border-t border-gray-200 dark:border-gray-800 mt-2',
+      footer: 'w-full flex items-center justify-start',
     }"
   >
     <video
@@ -28,7 +26,11 @@
     />
 
     <template #footer>
-      <UButton label="Utiliser" @click="useTemplate" />
+      <UBadge
+        :label="template.price + ' XOF'"
+        color="neutral"
+        variant="subtle"
+      />
     </template>
   </UPageCard>
 </template>

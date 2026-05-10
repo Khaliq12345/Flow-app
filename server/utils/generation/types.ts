@@ -5,4 +5,5 @@ export interface ParsedFormData {
   userId: string | null;
   projectName: string | null;
   textFile: { filename: string; data: Buffer; type: string } | null;
+  isSkippingPayment: boolean | null;
 }

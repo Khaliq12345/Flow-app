@@ -3,12 +3,15 @@ import { useDirectusAdmin } from "~~/server/utils/directus";
 
 export default defineEventHandler(async (event) => {
   try {
-    const { limit, offset } = getQuery(event);
+    const { limit, offset, userId } = getQuery(event);
 
     const generations = await useDirectusAdmin().request(
       readItems("generations", {
         limit: parseInt(limit as string),
         offset: parseInt(offset as string),
+        filter: {
+          user_id: userId as string,
+        },
       }),
     );
 
