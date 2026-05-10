@@ -38,6 +38,7 @@
                         title: 'text-white text-xl font-semibold',
                         description: 'text-white/60 text-sm',
                     }"
+                    :loading="pending"
                     @submit="onSubmit"
                 >
                     <template #footer>
@@ -54,7 +55,6 @@
                                 </UButton>
                             </p>
                             <UButton
-                                :loading="pending"
                                 block
                                 variant="outline"
                                 to="/signup"

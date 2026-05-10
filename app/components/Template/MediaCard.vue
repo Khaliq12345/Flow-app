@@ -1,66 +1,93 @@
 <template>
-  <UPageCard
-    :title="template.name"
-    :description="template.description"
-    reverse
-    :ui="{
-      root: 'hover:shadow-md hover:shadow-primary transition-shadow duration-300',
-      footer: hideFooter
-        ? 'hidden'
-        : 'w-full px-2 flex items-center justify-center border-t border-gray-200 dark:border-gray-800 mt-2',
-    }"
-  >
-    <video
-      v-if="type === 'video'"
-      ref="video"
-      :src="mediaLink(props.template.preview)"
-      :alt="props.template.name"
-      class="w-full h-full rounded-md aspect-video object-contain"
-      @mouseenter="playVideo"
-      @mouseleave="pauseVideo"
-      @click="playVideo"
-      loop
-      muted
-    />
-    <img
-      v-else
-      :src="mediaLink(props.template.preview)"
-      :alt="props.template.name"
-      class="w-full rounded-md max-h-64 object-contain"
-    />
+    <UPageCard
+        :title="template.name"
+        :description="template.description"
+        reverse
+        :ui="uiConfig"
+    >
+        <!-- Media Wrapper: ensures consistent height regardless of media type -->
+        <div
+            class="relative aspect-video w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-900 group"
+        >
+            <video
+                v-if="type === 'video'"
+                ref="videoPlayer"
+                :src="mediaLink(template.preview)"
+                :poster="mediaLink(template.preview)"
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loop
+                muted
+                playsinline
+                @mouseenter="playVideo"
+                @mouseleave="pauseVideo"
+                @touchstart="playVideo"
+            />
+            <img
+                v-else
+                :src="mediaLink(template.preview)"
+                :alt="template.name"
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+            />
+        </div>
 
-    <template #footer>
-      <UButton label="Utiliser" @click="useTemplate" />
-    </template>
-  </UPageCard>
+        <template #footer>
+            <div class="flex w-full items-center justify-between gap-2">
+                <UButton
+                    label="Utiliser"
+                    icon="i-heroicons-plus-circle"
+                    @click="useTemplate"
+                />
+                <UBadge
+                    size="lg"
+                    variant="subtle"
+                    class="font-bold rounded-full px-3"
+                >
+                    {{ template.price.toLocaleString() }} XOF
+                </UBadge>
+            </div>
+        </template>
+    </UPageCard>
 </template>
 
 <script setup lang="ts">
 import type { Template } from "~/types/template";
 
 const props = defineProps<{
-  template: Template;
-  type: "image" | "video";
-  hideFooter?: boolean;
+    template: Template;
+    type: "image" | "video";
+    hideFooter?: boolean;
 }>();
 
 const router = useRouter();
+const videoPlayer = useTemplateRef<HTMLVideoElement>("videoPlayer");
 
-// Create a reference to the video element
-const videoPlayer = useTemplateRef<HTMLVideoElement>("video");
+// Computed UI configuration for Nuxt UI
+const uiConfig = computed(() => ({
+    root: "hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 ring-1 ring-gray-200 dark:ring-gray-800",
+    footer: props.hideFooter
+        ? "hidden"
+        : "px-4 py-3 border-t border-gray-200 dark:border-gray-800",
+    body: "p-4",
+}));
 
-const playVideo = () => {
-  videoPlayer.value?.play();
+const playVideo = async () => {
+    try {
+        await videoPlayer.value?.play();
+    } catch (err) {
+        // Handle cases where autoplay/play is blocked by browser policy
+        console.warn("Video play failed:", err);
+    }
 };
 
 const pauseVideo = () => {
-  videoPlayer.value?.pause();
-  // Optional: Reset to the beginning
-  // videoPlayer.value!.currentTime = 0
+    videoPlayer.value?.pause();
 };
 
 function useTemplate() {
-  console.log("Utiliser le template", props.template.id);
-  router.push(`/generation?templateId=${props.template.id}`);
+    router.push({
+        path: "/generation",
+        query: { templateId: props.template.id },
+    });
 }
 </script>

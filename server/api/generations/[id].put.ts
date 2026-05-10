@@ -4,6 +4,7 @@ import { readItem, updateItem } from "@directus/sdk";
 export default defineEventHandler(async (event) => {
   try {
     const generationId = getRouterParam(event, "id") as string;
+    const body = await readBody(event);
 
     if (!generationId) {
       throw createError({
@@ -31,7 +32,7 @@ export default defineEventHandler(async (event) => {
     // Update status to pending and set user_id
     const updatedGeneration = await directus.request(
       updateItem("generations", generationId, {
-        payment_status: "paid",
+        payment_status: body.status,
       }),
     );
 

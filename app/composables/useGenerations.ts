@@ -139,7 +139,7 @@ export default () => {
   };
 
   /**
-   * Met à jour le statut d'une génération vers "pending" et définit le user_id
+   * Met à jour le statut d'une génération
    */
   const updateGenerationStatus = async (
     generationId: string,
@@ -147,6 +147,9 @@ export default () => {
     try {
       await $fetch(`/api/generations/${generationId}`, {
         method: "PUT",
+        body: {
+          status: "paid",
+        },
       });
       return true;
     } catch (error) {

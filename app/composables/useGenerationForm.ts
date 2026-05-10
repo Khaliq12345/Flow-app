@@ -18,7 +18,7 @@ export function useGenerationForm({
   const { payAndRedirect } = usePayment();
   const authStore = useAuthStore();
   const toast = useToast();
-
+  const config = useRuntimeConfig();
   const paymentLoading = ref(false);
   const skipPayment = ref(false);
 
@@ -28,7 +28,7 @@ export function useGenerationForm({
         amount: price.value,
         description: `FLOW - Paiement Projet ${projectName.value}`,
         currency: "XOF",
-        callback_url: "http://localhost:3000/payments/callback",
+        callback_url: `${config.public.url}/payments/callback`,
         generationId,
         templateId: templateId.value,
       });

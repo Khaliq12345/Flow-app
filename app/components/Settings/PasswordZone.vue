@@ -44,15 +44,19 @@ const changePassword = async () => {
     isPending.value = true;
 
     try {
-        await passwordRequest();
-
-        toast.add({
-            title: "Email envoyé",
-            description:
-                "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
-            icon: "i-heroicons-check-circle",
-            color: "primary",
-        });
+        await setAuthenticated();
+        if (!isAuthenticated) {
+            return navigateTo("/login");
+        } else {
+            await passwordRequest();
+            toast.add({
+                title: "Email envoyé",
+                description:
+                    "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+                icon: "i-heroicons-check-circle",
+                color: "primary",
+            });
+        }
     } catch (error) {
         toast.add({
             title: "Erreur",

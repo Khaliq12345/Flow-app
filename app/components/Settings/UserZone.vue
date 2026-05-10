@@ -65,13 +65,14 @@
                 icon="i-lucide-save"
                 class="md:col-span-2"
                 @click="saveUser"
+                :loading="saving"
             />
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-const { user, setAuthenticated } = useAuthStore();
+const { user, setAuthenticated, isAuthenticated } = useAuthStore();
 const { updateUser } = useUser();
 const toast = useToast();
 
@@ -92,16 +93,21 @@ const saveUser = async () => {
 
     saving.value = true;
     try {
-        await updateUser(user.id, {
-            last_name: userInfo.value.lastName,
-            first_name: userInfo.value.firstName,
-            email: userInfo.value.email,
-        });
+        await setAuthenticated();
+        if (!isAuthenticated) {
+            return navigateTo("/login");
+        } else {
+            await updateUser(user.id, {
+                last_name: userInfo.value.lastName,
+                first_name: userInfo.value.firstName,
+                email: userInfo.value.email,
+            });
 
-        toast.add({
-            title: "Utilisateur mis à jour",
-            color: "success",
-        });
+            toast.add({
+                title: "Utilisateur mis à jour",
+                color: "success",
+            });
+        }
     } catch (err) {
         toast.add({
             title: "Échec de la mise à jour",

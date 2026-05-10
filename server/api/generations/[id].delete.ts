@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
       await directus.request(deleteFiles(fileIds));
     }
 
-    // 4. Supprimer le dossier
+    // 4. Supprimer les dossiers
     if (projectFolderId && inputsFolderId) {
       await directus.request(deleteFolders([projectFolderId, inputsFolderId]));
       console.log("[generation/delete] Dossier projet et inputs supprimé");

@@ -1,5 +1,5 @@
 import { Transaction } from "fedapay";
-import { useFedapay } from "~~/server/utils/fedapay.ts";
+import { useFedapay } from "~~/server/utils/fedapay";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
     if (!transaction) {
       throw createError({
         statusCode: 502,
-        message: "[payment/transactions/token.post] FedaPay n'a pas retourné de lien de paiement valide.",
+        message:
+          "[payment/transactions/token.post] FedaPay n'a pas retourné de lien de paiement valide.",
       });
     }
 
@@ -18,7 +19,8 @@ export default defineEventHandler(async (event) => {
     if (!token?.url) {
       throw createError({
         statusCode: 502,
-        message: "[payment/transactions/token.post] FedaPay n'a pas retourné de lien de paiement valide.",
+        message:
+          "[payment/transactions/token.post] FedaPay n'a pas retourné de lien de paiement valide.",
       });
     }
     return token.url;
@@ -26,7 +28,10 @@ export default defineEventHandler(async (event) => {
     // Laisser passer les erreurs H3 (createError) telles quelles
     if (err.statusCode) throw err;
 
-    console.error("[payment/transactions/token.post] Erreur inattendue:", err?.message ?? err);
+    console.error(
+      "[payment/transactions/token.post] Erreur inattendue:",
+      err?.message ?? err,
+    );
     throw createError({
       statusCode: 500,
       message: `[payment/transactions/token.post] ${err?.message ?? "Erreur interne du serveur."}`,

@@ -172,13 +172,7 @@ const inputClass =
     "bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15";
 const labelClass = "text-white/80 text-sm";
 
-const videos = [
-    "https://www.pexels.com/fr-fr/download/video/36179611/",
-    "https://www.pexels.com/fr-fr/download/video/32053942/",
-    "https://www.pexels.com/fr-fr/download/video/37099166/",
-    "https://www.pexels.com/fr-fr/download/video/32072019/",
-    "https://www.pexels.com/fr-fr/download/video/35626338/",
-];
+const videos = ["https://www.pexels.com/fr-fr/download/video/37099166/"];
 
 const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
 

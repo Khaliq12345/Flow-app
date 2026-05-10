@@ -1,5 +1,5 @@
 import { Transaction } from "fedapay";
-import { useFedapay } from "~~/server/utils/fedapay.ts";
+import { useFedapay } from "~~/server/utils/fedapay";
 
 export default defineEventHandler(async (event) => {
   try {

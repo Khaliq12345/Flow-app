@@ -26,8 +26,6 @@ export default defineEventHandler(async (event) => {
 
     const directus = useDirectusAdmin();
 
-    console.log("parsedData", parsedData);
-
     // Create folders and upload files
     const { projectFolder, inputsFolder } = await createGenerationFolders(
       directus,
@@ -36,9 +34,6 @@ export default defineEventHandler(async (event) => {
       parsedData.files,
       parsedData.textFile,
     );
-
-    console.log("projectFolder", projectFolder);
-    console.log("inputsFolder", inputsFolder);
 
     // Create generation record
     const generation = await createGenerationRecord(
