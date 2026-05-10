@@ -1,7 +1,10 @@
 <template>
-  <UApp>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </UApp>
+    <UApp>
+        <NuxtLayout>
+            <UColorModeButton />
+            <NuxtPage />
+        </NuxtLayout>
+    </UApp>
 </template>
+
+<script setup lang="ts"></script>

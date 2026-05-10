@@ -3,13 +3,17 @@ import { useFedapay } from "~~/server/utils/fedapay";
 
 export default defineEventHandler(async (event) => {
   try {
-    // Initialize FedaPay configuration
     useFedapay();
 
-    // Get the email from router params
-    const email = getRouterParam(event, "email") as string;
+    const { email } = getQuery(event);
 
-    // Search for the customer using filters
+    if (!email) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Le paramètre 'email' est requis pour la recherche.",
+      });
+    }
+    // 3. Perform the search via the FedaPay SDK
     const searchResults = await Customer.all({
       page: 1,
       per_page: 1,
@@ -17,7 +21,7 @@ export default defineEventHandler(async (event) => {
         compare: {
           email: {
             op: "=",
-            value: email,
+            value: email as string,
           },
         },
         orders: {
@@ -26,28 +30,28 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    // Customer.all returns a collection; we take the first item
-    const customer = searchResults.items[0] || null;
+    // 4. Extract the first matching customer
+    const customer = searchResults.customers[0] || null;
     if (!customer) {
       throw createError({
         statusCode: 404,
-        statusMessage: "Customer not found",
+        statusMessage: `Aucun client trouvé avec l'email : ${email}`,
       });
     }
 
     return customer;
   } catch (err: any) {
-    // Pass through H3 errors (like the 404 above)
+    // Keep H3 errors as they are (400, 404)
     if (err.statusCode) throw err;
 
     console.error(
-      "[payment/customers/search.get] Erreur inattendue:",
+      "[payment/customers/index.get] Erreur lors de la recherche :",
       err?.message ?? err,
     );
 
     throw createError({
       statusCode: 500,
-      message: `[payment/customers/search.get] ${err?.message ?? "Erreur interne du serveur."}`,
+      message: `[payment/customers/index.get] ${err?.message ?? "Erreur interne du serveur."}`,
     });
   }
 });

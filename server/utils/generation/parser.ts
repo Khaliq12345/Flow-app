@@ -15,6 +15,7 @@ export function parseGenerationFormData(
   let folderId: string | null = null;
   let userId: string | null = null;
   let projectName: string | null = null;
+  let projectType: string | null = null;
   let textFile: { filename: string; data: Buffer; type: string } | null = null;
   let isSkippingPayment: boolean | null = null;
 
@@ -40,6 +41,11 @@ export function parseGenerationFormData(
 
     if (partName === "name") {
       projectName = part.data.toString("utf-8");
+      continue;
+    }
+
+    if (partName === "type") {
+      projectType = part.data.toString("utf-8");
       continue;
     }
 
@@ -73,6 +79,7 @@ export function parseGenerationFormData(
     folderId,
     userId,
     projectName,
+    projectType,
     textFile,
     isSkippingPayment,
   };

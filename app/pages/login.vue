@@ -78,13 +78,7 @@ import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
 // Liste des vidéos disponibles
-const videos = [
-    "https://www.pexels.com/fr-fr/download/video/36179611/",
-    "https://www.pexels.com/fr-fr/download/video/32053942/",
-    "https://www.pexels.com/fr-fr/download/video/37099166/",
-    "https://www.pexels.com/fr-fr/download/video/32072019/",
-    "https://www.pexels.com/fr-fr/download/video/35626338/",
-];
+const videos = ["https://www.pexels.com/fr-fr/download/video/32053942/"];
 const fields = [
     {
         name: "email",
@@ -92,7 +86,7 @@ const fields = [
         label: "Email",
         placeholder: "votre@email.com",
         ui: {
-            base: "bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15",
+            base: "text-error",
         },
     },
     {
@@ -101,7 +95,7 @@ const fields = [
         label: "Mot de passe",
         placeholder: "••••••••",
         ui: {
-            base: "bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/15",
+            base: "text-error",
         },
     },
 ];

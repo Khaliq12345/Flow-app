@@ -4,6 +4,7 @@ export interface ParsedFormData {
   folderId: string | null;
   userId: string | null;
   projectName: string | null;
+  projectType: string | null;
   textFile: { filename: string; data: Buffer; type: string } | null;
   isSkippingPayment: boolean | null;
 }

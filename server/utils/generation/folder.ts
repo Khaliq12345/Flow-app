@@ -27,30 +27,34 @@ export async function createGenerationFolders(
     }),
   );
 
+  const allFiles = [];
   // Upload image files
   for (const file of Object.values(files)) {
-    await uploadFileToDirectus(
+    let fileId = await uploadFileToDirectus(
       directus,
       inputsFolder.id,
       file.filename,
       file.data,
       file.type,
     );
+    allFiles.push(fileId);
   }
 
   // Upload text file if present
   if (textFile) {
-    await uploadFileToDirectus(
+    const textFileId = await uploadFileToDirectus(
       directus,
       inputsFolder.id,
       textFile.filename,
       textFile.data,
       textFile.type,
     );
+    allFiles.push(textFileId);
   }
 
   return {
     projectFolder,
     inputsFolder,
+    allFiles,
   };
 }

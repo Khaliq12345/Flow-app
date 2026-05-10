@@ -104,6 +104,7 @@ export function useGenerationForm({
         projectName.value.trim(),
         fileData,
         textFields,
+        type.value,
         skipPayment.value,
       );
 

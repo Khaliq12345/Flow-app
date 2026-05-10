@@ -89,6 +89,7 @@ export default () => {
     projectName: string,
     fileData: Record<string, File>,
     textFields: Record<string, string>,
+    type: string,
     isSkippingPayment: boolean = false,
   ): Promise<CreateGenerationResponse> => {
     try {
@@ -105,6 +106,9 @@ export default () => {
 
       // Add project name
       formData.append("name", projectName);
+
+      // Add project type
+      formData.append("type", type);
 
       // Add image files with their field names
       for (const [fieldName, file] of Object.entries(fileData)) {

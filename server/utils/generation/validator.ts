@@ -28,4 +28,10 @@ export function validateGenerationData(data: ParsedFormData): void {
       message: "[generation/add.post] Project name manquant",
     });
   }
+  if (!data.projectType) {
+    throw createError({
+      statusCode: 400,
+      message: "[generation/add.post] Project type manquant",
+    });
+  }
 }

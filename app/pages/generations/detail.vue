@@ -12,7 +12,11 @@
             <!-- Template link -->
             <p
                 class="flex items-center gap-2 text-primary text-sm cursor-pointer"
-                @click="navigateTo(`/templates/${generations?.template_id}`)"
+                @click="
+                    navigateTo(
+                        `/generation?templateId=${generations?.template_id}`,
+                    )
+                "
             >
                 <UIcon name="i-lucide-info" class="size-5" />
                 <span

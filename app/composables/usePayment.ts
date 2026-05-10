@@ -46,6 +46,21 @@ export function usePayment() {
   }
 
   /**
+   * Rechercher un customer FedaPay par email via Query Params
+   */
+  async function findCustomer(email: string): Promise<FedapayCustomer> {
+    try {
+      const customer = await $fetch<FedapayCustomer>("/api/payment/customers", {
+        query: { email },
+      });
+      return customer;
+    } catch (err: any) {
+      console.error("Error searching for customer by email:", err);
+      throw err;
+    }
+  }
+
+  /**
    * Récupère un customer FedaPay par ID
    */
   async function getCustomer(customerId: string): Promise<FedapayCustomer> {
@@ -156,25 +171,23 @@ export function usePayment() {
 
       // --- 3. Vérification / création du customer FedaPay ---
       if (!fedapayCustomerId) {
+        const customer = await findCustomer(authStore.user.email);
+        console.log("CUSTOMERRR  ", customer);
         // Créer le customer FedaPay
-        fedapayCustomerId = await createCustomer({
-          first_name,
-          last_name,
-          email,
-          phone,
-          phone_country: phone_country,
-        });
-
-        // Vérification du customer en le récupérant
-        if (!fedapayCustomerId) {
-          throw new Error("Échec de la création du customer FedaPay.");
+        if (customer) {
+          fedapayCustomerId = customer.id;
+        } else {
+          fedapayCustomerId = await createCustomer({
+            first_name,
+            last_name,
+            email,
+            phone,
+            phone_country: phone_country,
+          });
         }
 
-        const customerVerification = await getCustomer(
-          String(fedapayCustomerId),
-        );
-        if (!customerVerification || !customerVerification.id) {
-          throw new Error("Impossible de vérifier le customer FedaPay créé.");
+        if (!fedapayCustomerId) {
+          throw new Error("Échec de la création du customer FedaPay.");
         }
 
         // Mettre à jour le user_folder avec le fedapay_id
