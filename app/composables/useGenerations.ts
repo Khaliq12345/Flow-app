@@ -145,15 +145,14 @@ export default () => {
   /**
    * Met à jour le statut d'une génération
    */
-  const updateGenerationStatus = async (
+  const updateGeneration = async (
     generationId: string,
+    body: Record<string, string | number>,
   ): Promise<boolean> => {
     try {
       await $fetch(`/api/generations/${generationId}`, {
         method: "PUT",
-        body: {
-          status: "paid",
-        },
+        body,
       });
       return true;
     } catch (error) {
@@ -185,7 +184,7 @@ export default () => {
     fetchGenerationsCount,
     fetchGenerationsById,
     createGeneration,
-    updateGenerationStatus,
+    updateGeneration,
     deleteGeneration,
   };
 };

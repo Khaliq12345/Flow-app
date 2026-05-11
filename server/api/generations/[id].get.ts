@@ -17,21 +17,9 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // 1. Read subfolders to
-    const subfolders = await useDirectusAdmin().request(
-      readFolders({
-        filter: { parent: { _eq: generations.input_media } },
-        fields: ["id", "name"],
-      }),
-    );
+    const inputFolder = generations.inputs_output.input_folder;
+    const outputFolder = generations.inputs_output.output_folder;
 
-    // 2. Find the "inputs" and optional "outputs" subfolders
-    const inputFolder = subfolders.find(
-      (folder) => folder.name.toLowerCase() === "inputs",
-    );
-    const outputFolder = subfolders.find(
-      (folder) => folder.name.toLowerCase() === "outputs",
-    );
     if (!inputFolder) {
       throw createError({
         statusCode: 404,
@@ -42,7 +30,7 @@ export default defineEventHandler(async (event) => {
     // 3. Read files from the inputs folder with optional pagination
     const generationsMedias = await useDirectusAdmin().request(
       readFiles({
-        filter: { folder: { _eq: inputFolder.id } },
+        filter: { folder: { _eq: inputFolder } },
         fields: ["id", "type"],
         limit: limit ? parseInt(limit as string) : undefined,
         offset: offset ? parseInt(offset as string) : undefined,
@@ -54,7 +42,7 @@ export default defineEventHandler(async (event) => {
     if (outputFolder) {
       const outputFiles = await useDirectusAdmin().request(
         readFiles({
-          filter: { folder: { _eq: outputFolder.id } },
+          filter: { folder: { _eq: outputFolder } },
           fields: ["id", "type"],
           limit: 1,
         }),

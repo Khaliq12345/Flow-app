@@ -15,31 +15,34 @@ export default defineEventHandler(async (event) => {
 
     const directus = useDirectusAdmin();
 
-    // Check if generation exists
-    const generation = await directus.request(
-      readItem("generations", generationId, {
-        fields: ["id", "status"],
-      }),
-    );
+    const allowedFields = ["payment_status", "transaction_id", "status"];
 
-    if (!generation) {
+    const updateData: Record<string, any> = {};
+
+    // 2. Map body keys to updateData if they are in the allowed list
+    for (const key of allowedFields) {
+      if (body[key] !== undefined) {
+        updateData[key] = body[key];
+      }
+    }
+
+    // Check if there is actually anything to update
+    if (Object.keys(updateData).length === 0) {
       throw createError({
-        statusCode: 404,
-        message: "[generation/[id].put] Génération non trouvée",
+        statusCode: 400,
+        message: "Aucune donnée valide fournie pour la mise à jour.",
       });
     }
 
-    // Update status to pending and set user_id
+    // 4. Perform the dynamic update
     const updatedGeneration = await directus.request(
-      updateItem("generations", generationId, {
-        payment_status: body.status,
-      }),
+      updateItem("generations", generationId, updateData),
     );
 
     return {
       success: true,
       generationId: updatedGeneration.id,
-      status: updatedGeneration.status,
+      updatedFields: Object.keys(updateData),
     };
   } catch (err: any) {
     if (err.statusCode) throw err;

@@ -166,6 +166,10 @@ export function usePayment() {
         throw new Error("Le montant doit être supérieur à 0.");
       }
 
+      if (!payload.generationId) {
+        throw new Error("Le id de generation est null");
+      }
+
       // --- 2. Récupération du user_folder depuis le store ---
       let fedapayCustomerId = authStore.user.userFolder.fedapay_id;
 
@@ -200,6 +204,8 @@ export function usePayment() {
       }
 
       // --- 4. Création de la transaction ---
+
+      const { updateGeneration } = useGenerations();
       const transactionId = await createTransaction(
         {
           description: payload.description,
@@ -216,6 +222,14 @@ export function usePayment() {
       );
 
       if (!transactionId) {
+        throw new Error("Échec de la création de la transaction FedaPay.");
+      }
+
+      const generationUpdated = await updateGeneration(payload.generationId, {
+        transaction_id: transactionId,
+      });
+
+      if (!generationUpdated) {
         throw new Error("Échec de la création de la transaction FedaPay.");
       }
 
@@ -243,12 +257,16 @@ export function usePayment() {
   /**
    * Redirige le navigateur vers l'URL de paiement FedaPay
    */
-  function redirectToPayment(paymentUrl: string): void {
+  async function redirectToPayment(paymentUrl: string): Promise<void> {
     if (!paymentUrl) {
       throw new Error("URL de paiement invalide.");
     }
+    console.log("PAYMENT URL ", paymentUrl);
 
-    window.open(paymentUrl, "_blank", "noopener,noreferrer");
+    await navigateTo(paymentUrl, {
+      external: true,
+      open: { target: "_blank" },
+    });
   }
 
   /**
@@ -258,7 +276,7 @@ export function usePayment() {
     payload: PaymentPayload,
   ): Promise<PaymentResult> {
     const result = await initiatePayment(payload);
-    redirectToPayment(result.paymentUrl);
+    await redirectToPayment(result.paymentUrl);
     return result;
   }
 

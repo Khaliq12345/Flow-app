@@ -4,9 +4,10 @@ export interface Generations {
   user_id: string;
   template_id: string;
   input_media: string;
-  status: "pending" | "completed" | "failed" | "payment_pending" | "approved";
+  status: "pending" | "completed" | "failed" | "approved";
   outputs_media?: string;
   payment_status: string;
+  transaction_id: number;
 }
 
 export interface GenerationMedia {
