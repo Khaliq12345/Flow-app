@@ -37,6 +37,7 @@
 
 <script lang="ts" setup>
 const { passwordRequest } = useAuth();
+const { setAuthenticated, isAuthenticated } = useAuthStore();
 const toast = useToast();
 const isPending = ref(false);
 

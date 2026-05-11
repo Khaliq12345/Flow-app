@@ -70,11 +70,13 @@ export const useAuth = () => {
     }
   };
 
-  const passwordRequest = async (): Promise<any> => {
+  const passwordRequest = async (
+    email: string | undefined = undefined,
+  ): Promise<any> => {
     try {
       const response = await $fetch("/api/auth/request-password", {
         method: "POST",
-        body: { email: authStore.user?.email },
+        body: { email: email ? email : authStore.user?.email },
       });
       return response;
     } catch (err: any) {

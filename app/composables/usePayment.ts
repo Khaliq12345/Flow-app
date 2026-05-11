@@ -285,6 +285,7 @@ export function usePayment() {
     initiatePayment,
     redirectToPayment,
     payAndRedirect,
+    generateTransactionToken,
     isLoading: readonly(isLoading),
     error: readonly(error),
   };

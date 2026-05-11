@@ -43,17 +43,7 @@
                 >
                     <template #footer>
                         <div class="flex flex-col gap-2 w-full">
-                            <p class="text-center text-sm text-white/50">
-                                Mot de passe oublié ?
-                                <UButton
-                                    variant="link"
-                                    color="neutral"
-                                    size="sm"
-                                    class="text-white/80 hover:text-white"
-                                >
-                                    Réinitialiser
-                                </UButton>
-                            </p>
+                            <ResetPasswordModal></ResetPasswordModal>
                             <UButton
                                 block
                                 variant="outline"

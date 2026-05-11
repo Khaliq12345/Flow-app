@@ -52,7 +52,7 @@ onMounted(async () => {
                     transaction.value.custom_metadata.generationId;
 
                 const success = await updateGeneration(generationId, {
-                    status: "paid",
+                    payment_status: "paid",
                 });
 
                 if (success) {
