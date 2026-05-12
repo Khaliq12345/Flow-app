@@ -43,4 +43,10 @@
 
 @theme {
     --font-sans: "Satoshi", ui-sans-serif, system-ui;
+    --color-primary: var(--ui-primary);
+    --color-secondary: var(--ui-secondary);
+    --color-success: var(--ui-success);
+    --color-info: var(--ui-info);
+    --color-warning: var(--ui-warning);
+    --color-error: var(--ui-error);
 }
