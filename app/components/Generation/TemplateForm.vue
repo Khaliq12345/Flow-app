@@ -1,16 +1,12 @@
 <template>
     <div class="space-y-6">
         <!-- Project Name Input -->
-        <div>
-            <UFormField label="Nom du Projet">
-                <UInput
-                    v-model="projectName"
-                    color="neutral"
-                    variant="subtle"
-                    placeholder="Nom du projet"
-                />
-            </UFormField>
-        </div>
+
+        <!-- Text Inputs Grid (Textareas) -->
+        <GenerationTextForm
+            :textInputs="textInputs"
+            v-model:formData="formData"
+        ></GenerationTextForm>
 
         <!-- Image Inputs Grid (Textareas) -->
 
@@ -19,13 +15,6 @@
             v-model:fileData="fileData"
             :imageInputs="imageInputs"
         ></GenerationMediaForm>
-
-        <!-- Text Inputs Grid (Textareas) -->
-
-        <GenerationTextForm
-            :textInputs="textInputs"
-            v-model:formData="formData"
-        ></GenerationTextForm>
 
         <!-- Generate Button -->
 

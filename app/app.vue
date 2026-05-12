@@ -1,7 +1,6 @@
 <template>
     <UApp>
         <NuxtLayout>
-            <UColorModeButton />
             <NuxtPage />
         </NuxtLayout>
     </UApp>

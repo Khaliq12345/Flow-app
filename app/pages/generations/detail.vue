@@ -1,81 +1,67 @@
 <template>
-    <!-- Root -->
-    <div class="rootdiv space-y-3">
-        <!-- Header -->
+    <div class="rootdiv">
+        <!-- Header: back arrow + title + description -->
         <Header
             title="Détails de la génération"
             description="Voici les détails de votre génération"
-        />
-
-        <!-- Pay Button -->
-        <UButton
-            v-if="paymentUrl"
-            :to="paymentUrl"
-            target="_blank"
-            color="neutral"
-            variant="solid"
-            size="md"
-            class="mb-4"
-        >
-            Payer
-        </UButton>
+        ></Header>
 
         <!-- Loading State -->
-        <div v-if="loading" class="space-y-4">
-            <div class="flex items-center gap-2">
-                <USkeleton class="h-5 w-5 rounded-full" />
-                <USkeleton class="h-4 w-56" />
+        <div v-if="loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div class="lg:col-span-2 space-y-4">
+                <USkeleton class="h-10 w-64" />
+                <USkeleton class="h-5 w-96" />
+                <USkeleton class="h-6 w-32 mt-4" />
+                <USkeleton class="h-48 w-full rounded-xl" />
             </div>
-            <USkeleton class="h-10 w-48" />
-            <USkeleton class="h-6 w-24 rounded-full" />
-            <USkeleton class="h-48 w-full rounded-xl" />
+            <div class="lg:col-span-1 space-y-4">
+                <USkeleton class="h-64 w-full rounded-xl" />
+            </div>
         </div>
 
         <!-- Content -->
-        <div v-else class="space-y-4">
-            <!-- Template link -->
-            <div
-                class="flex items-center gap-2 text-primary text-sm cursor-pointer w-fit rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 hover:bg-primary/10 transition-colors"
-                @click="
-                    navigateTo(
-                        `/generation?templateId=${generations?.template_id}`,
-                    )
-                "
-            >
-                <UIcon name="i-lucide-info" class="size-5 shrink-0" />
-                <span
-                    class="hover:underline underline-offset-2 decoration-primary"
-                >
-                    Cliquez ici pour voir le modèle utilisé.
-                </span>
+        <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <!-- Left column: title, description, medias -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Title + description -->
+                <div class="space-y-2">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-highlighted">
+                        {{ generations?.name }}
+                    </h1>
+                    <p class="text-base text-muted">
+                        Visualisation détaillée des médias et paramètres
+                        associés à ce projet.
+                    </p>
+                </div>
+
+                <!-- Input media card -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-highlighted">
+                        Médias envoyés
+                    </h2>
+                    <UCard variant="soft" :ui="{ body: 'p-4 sm:p-6' }">
+                        <div class="space-y-4">
+                            <GenerationsInputMedia
+                                :input-medias="generationsMedias"
+                            />
+                        </div>
+                    </UCard>
+                </div>
+
+                <!-- Output media -->
+                <GenerationsOutputMedia
+                    v-if="outputMedia"
+                    :output-media="outputMedia"
+                />
             </div>
 
-            <!-- Generation name -->
-            <h1 class="text-xl sm:text-4xl font-bold text-highlighted">
-                {{ generations?.name }}
-            </h1>
-
-            <!-- Generation status badge -->
-            <UBadge
-                :label="statusLabel"
-                :color="statusColor"
-                variant="subtle"
-                class="capitalize"
-            />
-
-            <!-- Input media -->
-            <div class="space-y-8">
-                <h2 class="text-lg font-semibold text-highlighted">
-                    Médias envoyés
-                </h2>
-                <GenerationsInputMedia :input-medias="generationsMedias" />
+            <!-- Right column: status card + template link -->
+            <div class="lg:col-span-1 space-y-4">
+                <GenerationsStatus
+                    v-model:generations="generations"
+                    :paymentUrl="paymentUrl"
+                ></GenerationsStatus>
             </div>
-
-            <!-- Output media -->
-            <GenerationsOutputMedia
-                v-if="outputMedia"
-                :output-media="outputMedia"
-            />
         </div>
     </div>
 </template>
@@ -86,7 +72,6 @@ import type {
     GenerationMedia,
     OutputMedia,
 } from "~/types/generations";
-import type { FedapayTransaction } from "~/types/payment";
 
 const { fetchGenerationsById } = useGenerations();
 const { getTransactionById, generateTransactionToken } = usePayment();
@@ -103,29 +88,15 @@ if (!generationId.value) {
     await navigateTo("/generations");
 }
 
-const statusLabel = computed(() => {
-    if (generations.value?.status === "pending") return "En Attente";
-    if (generations.value?.status === "completed") return "Terminé";
-    return "Échoué";
-});
-
-const statusColor = computed(() => {
-    if (generations.value?.status === "pending") return "warning";
-    if (generations.value?.status === "completed") return "success";
-    return "error";
-});
-
 async function getGeneration() {
     loading.value = true;
     const output = await fetchGenerationsById(generationId.value as string);
-    console.log(output);
     generations.value = output?.generations || null;
     generationsMedias.value = output?.generationsMedias || [];
     outputMedia.value = output?.output || null;
     if (!generations.value) {
         await navigateTo("/generations");
     }
-    console.log("here output is: ", outputMedia.value);
     loading.value = false;
 }
 
@@ -145,7 +116,6 @@ onMounted(async () => {
         } else {
             paymentUrl.value = transaction.payment_url;
         }
-        console.log(transaction);
     }
 });
 </script>
