@@ -19,7 +19,7 @@
             <UIcon :name="choice.icon" class="size-8" />
           </div>
           <div class="text-center">
-            <p class="text-base font-semibold text-gray-800 dark:text-gray-200">
+            <p class="text-base font-semibold text-gray-800 dark:text-gray-200 uppercase">
               {{ choice.label }}
             </p>
             <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">

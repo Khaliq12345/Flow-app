@@ -47,11 +47,11 @@ const statusLabels: Record<string, string> = {
 const columns: TableColumn<Generations>[] = [
   {
     accessorKey: "name",
-    header: "Nom",
+    header: "NOM",
   },
   {
     accessorKey: "status",
-    header: "Statut de traitement",
+    header: "STATUT DE TRAITEMENT",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       const color =
@@ -71,7 +71,7 @@ const columns: TableColumn<Generations>[] = [
   },
   {
     id: "actions",
-    header: "Actions",
+    header: "ACTIONS",
     meta: {
       class: {
         td: "text-right",

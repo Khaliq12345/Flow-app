@@ -1,5 +1,5 @@
 <template>
-  <div  class="p-2 rounded-lg space-y-4">
+  <div class="p-2 rounded-lg space-y-4">
     <UFormField
       label="Nom du Projet"
       :ui="{

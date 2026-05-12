@@ -12,7 +12,7 @@
                 />
             </div>
             <div>
-                <h2 class="font-bold text-gray-900 dark:text-white text-base">
+                <h2 class="font-bold text-gray-900 dark:text-white text-base uppercase">
                     Sécurité
                 </h2>
                 <p class="text-xs text-gray-500 dark:text-gray-400">

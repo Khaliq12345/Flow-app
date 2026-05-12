@@ -2,7 +2,7 @@
   <div class="space-y-3">
     <div class="px-4 md:px-6 flex items-center justify-between">
       <h3
-        class="text-lg md:text-2xl font-semibold text-gray-900 dark:text-white"
+        class="text-lg md:text-xl font-semibold text-gray-900 dark:text-white uppercase"
       >
         {{ title }}
       </h3>

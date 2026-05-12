@@ -37,21 +37,21 @@
         </div>
         <!-- Formulaire -->
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-            <UFormField label="Nom">
+            <UFormField label="NOM">
                 <UInput
                     placeholder="Nom de famille"
                     size="md"
                     v-model="userInfo.lastName"
                 />
             </UFormField>
-            <UFormField label="Prénom">
+            <UFormField label="PRÉNOM">
                 <UInput
                     placeholder="Prénom"
                     size="md"
                     v-model="userInfo.firstName"
                 />
             </UFormField>
-            <UFormField label="Adresse email" class="md:col-span-2">
+            <UFormField label="ADRESSE EMAIL" class="md:col-span-2">
                 <UInput
                     type="email"
                     placeholder="exemple@domaine.com"
