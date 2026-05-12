@@ -19,11 +19,7 @@
           background-size: 20px 20px;
         "
       />
-      <UAvatar
-        :text="userLetters"
-        size="2xl"
-        class="relative ring-4 ring-white shadow-md"
-      />
+      <UserInitials />
       <div class="relative">
         <h2 class="text-lg font-bold text-gray-900">
           {{ `${userInfo.firstName} ${userInfo.lastName}` }}
@@ -72,10 +68,6 @@ const userInfo = ref({
   lastName: user?.last_name,
   firstName: user?.first_name,
   email: user?.email,
-});
-
-const userLetters = computed(() => {
-  return `${userInfo.value.firstName?.slice(0, 1)} ${userInfo.value.lastName?.slice(0, 1)}`;
 });
 
 const saving = ref(false);

@@ -3,10 +3,12 @@
   <div class="flex items-center justify-center my-auto min-h-40">
     <!-- wrapper -->
     <div class="flex gap-2 items-center p-2">
-      <!-- Spinner -->
-      <p
-        class="w-6 h-6 border-4 border-gray-500 border-t-primary rounded-full animate-spin"
-      ></p>
+      <!-- Animation -->
+      <img
+        :src="isDark ? '/icon-white.png' : '/icon.png'"
+        alt="Flow"
+        class="h-12 animate-bounce"
+      />
       <!-- Text -->
       <p>
         <span class="text-primary"> Flow </span>
@@ -26,6 +28,10 @@ const props = defineProps({
     default: "Chargement...",
   },
 });
+
+const colorMode = useColorMode();
+
+const isDark = computed(() => colorMode.value === "dark");
 </script>
 
 <style></style>
