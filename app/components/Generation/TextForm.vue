@@ -1,5 +1,5 @@
 <template>
-  <div v-if="textInputs.length > 0" class="p-2 rounded-lg space-y-4">
+  <div  class="p-2 rounded-lg space-y-4">
     <UFormField
       label="Nom du Projet"
       :ui="{
@@ -80,8 +80,9 @@ const longInputs = computed(() => {
   return props.textInputs.filter((input) => input && input.input === "long");
 });
 
-const { projectName, formData } = inject("form") as {
+const { projectName, formData, fileData } = inject("form") as {
   projectName: Ref<string>;
-  formData: Ref<Record<string, string>>;
+  formData: Ref<Record<string, any>>;
+  fileData: Ref<Record<string, File>>;
 };
 </script>

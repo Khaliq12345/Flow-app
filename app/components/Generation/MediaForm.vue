@@ -55,23 +55,23 @@ defineProps<{
   imageInputs: TemplateInput[];
 }>();
 
-const formData = defineModel<Record<string, string>>("formData");
-const fileData = defineModel<Record<string, File>>("fileData");
-
+const { formData, fileData } = inject("form") as {
+  projectName: Ref<string>;
+  formData: Ref<Record<string, any>>;
+  fileData: Ref<Record<string, File>>;
+};
 function handleFileChange(fieldName: string, event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0];
-  if (!file || !fileData.value) return;
+  if (!file) return;
 
+  // Stocker le fichier File dans fileData pour l'upload
   fileData.value[fieldName] = file;
 
+  // Stocker le preview DataURL dans formData pour l'affichage
   const reader = new FileReader();
   reader.onload = (e) => {
-    formData.value = {
-      ...formData.value,
-      [fieldName]: e.target?.result as string,
-    };
+    formData.value[fieldName] = e.target?.result as string;
   };
-
   reader.readAsDataURL(file);
 }
 </script>

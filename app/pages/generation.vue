@@ -23,12 +23,7 @@
 
         <template #default>
           <!-- Template Form -->
-          <GenerationTemplateForm
-            :inputs="template.inputs"
-            :template-id="template.id"
-            :type="template.type"
-            :price="parseInt(template.price)"
-          />
+          <GenerationTemplateForm :inputs="template.inputs" />
         </template>
 
         <template #footer>
@@ -45,6 +40,8 @@
               icon="i-lucide-sparkles"
               color="primary"
               size="lg"
+              @click="handleSubmit"
+              :loading="paymentLoading"
             />
           </div>
         </template>
@@ -68,6 +65,50 @@ const loading = ref(true);
 const template = ref<Template | null>(null);
 
 const showMissingTemplateModal = ref(!template);
+
+// Formulaire data
+const formData = ref<Record<string, string>>({});
+const fileData = ref<Record<string, File>>({});
+const projectName = ref("");
+
+// Provide pour les composants enfants
+provide("form", {
+  formData,
+  fileData,
+  projectName,
+});
+
+const authStore = useAuthStore();
+
+const imageInputs = computed(
+  () => template.value?.inputs.filter((f) => f.type === "image") || [],
+);
+
+const textInputs = computed(
+  () => template.value?.inputs.filter((f) => f.type === "text") || [],
+);
+
+const { paymentLoading, startPayment } = useGenerationForm({
+  templateId: toRef(() => template.value?.id || ""),
+  type: toRef(() => template.value?.type || ""),
+  price: toRef(() => (template.value ? parseInt(template.value.price) : 0)),
+  projectName,
+});
+
+async function handleSubmit(event: MouseEvent) {
+  event.preventDefault();
+  await authStore.setAuthenticated();
+  if (!authStore.isAuthenticated) {
+    await navigateTo("/login");
+  } else {
+    await startPayment(
+      imageInputs.value,
+      textInputs.value,
+      formData.value,
+      fileData.value,
+    );
+  }
+}
 
 async function getTemplate() {
   loading.value = true;
