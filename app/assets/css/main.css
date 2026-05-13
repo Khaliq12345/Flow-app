@@ -36,7 +36,7 @@
 
 @font-face {
     font-family: "Satoshi";
-    src: url("/fonts/Satoshi-Variable.ttf") format("truetype");
+    src: url("/fonts/Satoshi-Regular.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 }
