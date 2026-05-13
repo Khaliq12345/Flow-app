@@ -28,6 +28,7 @@ export interface User {
   tfa_secret: string | null;
   token: string | null;
   userFolder: {
+    id: string;
     fedapay_id: number | null;
     folder_id: string;
     user_id: string;

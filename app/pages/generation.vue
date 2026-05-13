@@ -36,6 +36,7 @@
               Prêt à générer tout les aspects obligatoire sont configuré !
             </p>
             <UButton
+              :disabled="isMissingUserInfo"
               label="Générer le contenu"
               icon="i-lucide-sparkles"
               color="primary"
@@ -77,6 +78,8 @@ provide("form", {
   fileData,
   projectName,
 });
+
+const isMissingUserInfo = inject("isMissingUserInfo");
 
 const authStore = useAuthStore();
 
