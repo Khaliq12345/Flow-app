@@ -4,6 +4,7 @@
     :title="template.name"
     :description="template.description"
     orientation="horizontal"
+    class="border border-gray-200 rounded-lg dark:border-gray-700"
     :ui="{
       root: 'w-full',
       container: 'py-3 lg:p-3 w-full',
@@ -18,7 +19,9 @@
       />
     </template>
     <!-- Droite : média -->
-    <div class="w-full md:w-96 h-56 overflow-hidden rounded-lg">
+    <div
+      class="w-full h-56 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 flex"
+    >
       <video
         v-if="type === 'video'"
         :src="mediaLink(template.preview)"

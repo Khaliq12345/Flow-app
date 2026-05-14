@@ -32,12 +32,6 @@ export default defineEventHandler(async (event) => {
 
     // 4. Extract the first matching customer
     const customer = searchResults.customers[0] || null;
-    if (!customer) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: `Aucun client trouvé avec l'email : ${email}`,
-      });
-    }
 
     return customer;
   } catch (err: any) {
