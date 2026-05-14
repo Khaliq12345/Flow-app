@@ -1,54 +1,60 @@
 <template>
-    <div class="rootdiv">
-        <!-- Header -->
-        <Header
-            title="Génération de contenu"
-            description="Remplissez les champs requis pour générer votre contenu"
-        />
+  <div class="rootdiv">
+    <!-- Header -->
+    <Header
+      title="Génération de contenu"
+      description="Remplissez les champs requis pour générer votre contenu"
+    />
 
-        <Loading
-            v-if="loading"
-            class="flex items-center justify-center my-auto min-h-40"
-        />
-        <div v-if="!loading && template" class="space-y-6 bg-yellow-500">
-            <UCard class="bg-green-500">
-                <p class="text-xl font-semibold text-red">Modèle choisi :</p>
-                <!-- Preview -->
-                <div class="flex items-center">
-                    <GenerationMediaCard
-                        :template="template"
-                        :type="template?.type"
-                    />
-                </div>
-            </UCard>
+    <Loading
+      v-if="loading"
+      class="flex items-center justify-center my-auto min-h-40"
+    />
+    <div v-if="!loading && template" class="space-y-6">
+      <div class="">
+        <GenerationMediaCard :template="template" :type="template?.type" />
+      </div>
 
-            <UCard class="bg-purple-400">
-                <template #header>
-                    <p class="text-xl font-semibold">
-                        Configuration des Assets
-                    </p>
-                </template>
+      <!-- wrapper -->
+      <UCard>
+        <template #header>
+          <p class="text-xl font-semibold">Configuration des Assets</p>
+        </template>
 
-                <!-- Template Form -->
-                <GenerationTemplateForm
-                    :inputs="template.inputs"
-                    :template-id="template.id"
-                    :type="template.type"
-                    :price="parseInt(template.price)"
-                />
+        <template #default>
+          <!-- Template Form -->
+          <GenerationTemplateForm
+            :inputs="template.inputs"
+            :template-id="template.id"
+            :type="template.type"
+            :price="parseInt(template.price)"
+          />
+        </template>
 
-                <template #footer>
-                    <Placeholder class="h-8" />
-                </template>
-            </UCard>
-        </div>
-
-        <div v-if="showMissingTemplateModal" class="mx-auto md:max-w-md">
-            <GenerationMissingTemplate
-                :model-value="showMissingTemplateModal"
+        <template #footer>
+          <!-- footer -->
+          <div
+            class="flex flex-col md:flex-row gap-2 items-center md:justify-between"
+          >
+            <p class="flex items-center gap-2 text-green-500">
+              <UIcon name="i-lucide-check" />
+              Prêt à générer tout les aspects obligatoire sont configuré !
+            </p>
+            <UButton
+              label="Générer le contenu"
+              icon="i-lucide-sparkles"
+              color="primary"
+              size="lg"
             />
-        </div>
+          </div>
+        </template>
+      </UCard>
     </div>
+
+    <div v-if="showMissingTemplateModal" class="mx-auto md:max-w-md">
+      <GenerationMissingTemplate :model-value="showMissingTemplateModal" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -64,20 +70,20 @@ const template = ref<Template | null>(null);
 const showMissingTemplateModal = ref(!template);
 
 async function getTemplate() {
-    loading.value = true;
-    const result = await fetchTemplateById(templateId);
+  loading.value = true;
+  const result = await fetchTemplateById(templateId);
 
-    if (result) {
-        template.value = result;
-        showMissingTemplateModal.value = false;
-    } else {
-        showMissingTemplateModal.value = true;
-    }
+  if (result) {
+    template.value = result;
+    showMissingTemplateModal.value = false;
+  } else {
+    showMissingTemplateModal.value = true;
+  }
 
-    loading.value = false;
+  loading.value = false;
 }
 
 onMounted(async () => {
-    await getTemplate();
+  await getTemplate();
 });
 </script>

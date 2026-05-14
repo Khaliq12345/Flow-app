@@ -2,7 +2,7 @@ export type TemplateInput = {
   type: "image" | "text";
   name: string;
   description: string;
-  field_type: "input" | "textarea";
+  input?: "long" | "short";
 };
 
 export type Template = {

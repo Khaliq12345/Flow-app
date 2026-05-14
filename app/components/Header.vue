@@ -12,7 +12,7 @@
                     @click="$router.back()"
                 />
                 <h1
-                    class="text-xl sm:text-4xl font-medium text-gray-900 dark:text-white leading-tight"
+                    class="text-xl sm:text-4xl font-bold uppercase text-gray-900 dark:text-white leading-tight"
                 >
                     {{ title }}
                 </h1>
