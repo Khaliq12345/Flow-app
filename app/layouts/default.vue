@@ -1,7 +1,9 @@
 <template>
-  <UDashboardGroup>
-    <AppSidebar />
-    <slot />
-  </UDashboardGroup>
-  <AppBottomNav />
+    <UDashboardGroup>
+        <AppSidebar />
+
+        <UColorModeButton />
+        <slot />
+    </UDashboardGroup>
+    <AppBottomNav />
 </template>
