@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="navigateTo('/settings')" class="cursor-pointer">
     <UAvatar :text="initials" size="md" />
   </div>
 </template>

@@ -1,4 +1,4 @@
-import { updateUser } from "@directus/sdk";
+import { updateItem, updateUser } from "@directus/sdk";
 
 export default defineEventHandler(async (event) => {
   const adminClient = useDirectusAdmin();
@@ -23,6 +23,14 @@ export default defineEventHandler(async (event) => {
   try {
     // 2. Execution
     const user = await adminClient.request(updateUser(userId, body));
+    if (body.phone && body.phone_country) {
+      // TODO: Update phone number in external service
+      await adminClient.request(updateItem("user_folder", body.userFolderId, {
+        phone: body.phone,
+        phone_country: body.phone_country,
+      }));
+      console.log("Phone number updated in external service");
+    }
     return user;
   } catch (error: any) {
     console.error(`[User Update API Error]: ${error.message}`);

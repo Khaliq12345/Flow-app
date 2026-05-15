@@ -86,6 +86,8 @@ provide("form", {
     projectName,
 });
 
+const isMissingUserInfo = inject("isMissingUserInfo");
+
 const authStore = useAuthStore();
 
 const imageInputs = computed(

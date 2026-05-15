@@ -20,6 +20,7 @@
                 playsinline
                 @mouseenter="playVideo"
                 @mouseleave="pauseVideo"
+                @touchstart="playVideo"
             />
             <img
                 v-else
