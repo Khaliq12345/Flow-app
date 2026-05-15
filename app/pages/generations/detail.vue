@@ -25,7 +25,7 @@
       <div class="lg:col-span-2 space-y-8">
         <!-- Title + description -->
         <div class="space-y-2">
-          <h1 class="text-3xl sm:text-4xl font-bold text-highlighted">
+          <h1 class="text-xl sm:text-2xl font-bold text-highlighted">
             {{ generations?.name }}
           </h1>
           <p class="text-base text-muted">
@@ -36,9 +36,7 @@
 
         <!-- Input media card -->
         <div class="space-y-4">
-          <h2 class="text-lg font-semibold text-highlighted uppercase">
-            Médias envoyés
-          </h2>
+          <h2 class="text-base uppercase">Médias envoyés</h2>
           <UCard variant="soft" :ui="{ body: 'p-4 sm:p-6' }">
             <div class="space-y-4">
               <GenerationsInputMedia :input-medias="generationsMedias" />
