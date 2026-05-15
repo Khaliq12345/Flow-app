@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
         filter: {
           user_id: userId as string,
         },
+        fields: ["*", "template_id.price"], // many-to-one : pas de tableau intermédiaire
       }),
     );
 

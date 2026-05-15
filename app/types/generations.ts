@@ -2,12 +2,13 @@ export interface Generations {
   id: string;
   name: string;
   user_id: string;
-  template_id: string;
+  // template_id: string;
   input_media: string;
   status: "pending" | "completed" | "failed" | "approved";
   outputs_media?: string;
   payment_status: string;
   transaction_id: number;
+  template_id: { price: string };
 }
 
 export interface GenerationMedia {

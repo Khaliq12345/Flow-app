@@ -2,7 +2,6 @@
     <UDashboardGroup>
         <AppSidebar />
 
-        <UColorModeButton />
         <slot />
     </UDashboardGroup>
     <AppBottomNav />

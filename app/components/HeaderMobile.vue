@@ -10,8 +10,19 @@
         class="h-8"
       />
 
-      <UserInitials />
+      <div class="flex items-center gap-2">
+        <UColorModeButton />
+
+        <UPopover mode="hover" v-model:open="open">
+          <UserInitials @click="open = !open" />
+
+          <template #content>
+            <FreeQuotaMobile />
+          </template>
+        </UPopover>
+      </div>
     </div>
+
     <div>
       <h1
         class="text-xl sm:text-4xl font-bold uppercase text-gray-900 dark:text-white leading-tight"
@@ -32,6 +43,7 @@ defineProps<{
 }>();
 
 const colorMode = useColorMode();
+const open = ref(false);
 
 const isDark = computed(() => colorMode.value === "dark");
 </script>
