@@ -51,7 +51,7 @@ const columns: TableColumn<Generations>[] = [
   },
   {
     accessorKey: "status",
-    header: "STATUT DE TRAITEMENT",
+    header: "STATUT",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       const color =
@@ -70,14 +70,12 @@ const columns: TableColumn<Generations>[] = [
     },
   },
   {
+    accessorKey: "template_id.price",
+    header: "PRIX",
+  },
+  {
     id: "actions",
     header: "ACTIONS",
-    meta: {
-      class: {
-        td: "text-right",
-        th: "text-right",
-      },
-    },
     cell: ({ row }) => {
       return h(UButton, {
         label: "Voir les détails",
@@ -98,11 +96,14 @@ async function getGenerations(newPage: number = 1) {
   loading.value = true;
   page.value = newPage;
   generations.value = await fetchGenerations(limit, (page.value - 1) * limit);
+  console.log(generations.value);
   total.value = await fetchGenerationsCount();
   loading.value = false;
 }
 
-onMounted(getGenerations);
+onMounted(async () => {
+  await getGenerations();
+});
 </script>
 
 <style></style>

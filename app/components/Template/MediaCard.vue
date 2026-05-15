@@ -7,14 +7,14 @@
     >
         <!-- Media Wrapper: ensures consistent height regardless of media type -->
         <div
-            class="relative aspect-video w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-900 group"
+            class="relative w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-900 group"
         >
             <video
                 v-if="type === 'video'"
                 ref="videoPlayer"
                 :src="mediaLink(template.preview)"
                 :poster="mediaLink(template.preview)"
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                 loop
                 muted
                 playsinline
@@ -64,7 +64,6 @@ const props = defineProps<{
 const router = useRouter();
 const videoPlayer = useTemplateRef<HTMLVideoElement>("videoPlayer");
 
-// Computed UI configuration for Nuxt UI
 const uiConfig = computed(() => ({
     root: "hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 ring-1 ring-gray-200 dark:ring-gray-800",
     footer: props.hideFooter
@@ -78,7 +77,6 @@ const playVideo = async () => {
     try {
         await videoPlayer.value?.play();
     } catch (err) {
-        // Handle cases where autoplay/play is blocked by browser policy
         console.warn("Video play failed:", err);
     }
 };
@@ -93,4 +91,37 @@ function useTemplate() {
         query: { templateId: props.template.id },
     });
 }
+
+let observer: IntersectionObserver | null = null;
+
+// Watch the ref — fires as soon as the video element exists
+watch(
+    videoPlayer,
+    (el) => {
+        if (!el) return;
+
+        // Clean up old observer if it exists
+        if (observer) observer.disconnect();
+
+        observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        playVideo();
+                    } else {
+                        pauseVideo();
+                    }
+                });
+            },
+            { threshold: 0.5 },
+        );
+
+        observer.observe(el);
+    },
+    { immediate: true },
+);
+
+onBeforeUnmount(() => {
+    if (observer) observer.disconnect();
+});
 </script>

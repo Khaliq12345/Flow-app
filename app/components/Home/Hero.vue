@@ -37,11 +37,11 @@
                 />
 
                 <!-- Headline -->
-                <p
-                    class="text-white/90 text-base sm:text-xl md:text-2xl font-semibold tracking-[0.18em] sm:tracking-widest uppercase text-center drop-shadow-lg select-none"
+                <ULink
+                    :to="`/template/${type}`"
+                    class="flex justify-center text-white/90 text-base sm:text-xl md:text-2xl font-semibold tracking-[0.18em] sm:tracking-widest uppercase text-center drop-shadow-lg select-none"
+                    >{{ headline }}</ULink
                 >
-                    {{ headline }}
-                </p>
 
                 <!-- Description -->
                 <p

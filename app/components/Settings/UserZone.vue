@@ -1,32 +1,31 @@
 <template>
-  <div
-    class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden"
-  >
-    <!-- Header avec fond dégradé -->
     <div
-      class="relative flex items-center gap-4 px-6 py-5"
-      style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)"
+        class="bg-secondary rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden"
     >
-      <!-- Motif de points -->
-      <div
-        class="absolute inset-0 opacity-40"
-        style="
-          background-image: radial-gradient(
-            circle,
-            #a78bfa44 1px,
-            transparent 1px
-          );
-          background-size: 20px 20px;
-        "
-      />
-      <UserInitials />
-      <div class="relative">
-        <h2 class="text-lg font-bold text-gray-900">
-          {{ `${userInfo.firstName} ${userInfo.lastName}` }}
-        </h2>
-        <p class="text-sm text-gray-500 font-medium">Profil utilisateur</p>
-      </div>
-    </div>
+        <!-- Header avec fond dégradé -->
+        <div class="relative flex items-center gap-4 px-6 py-5 bg-primary">
+            <!-- Motif de points -->
+            <div
+                class="absolute inset-0 opacity-40"
+                style="
+                    background-image: radial-gradient(
+                        circle,
+                        #a78bfa44 1px,
+                        transparent 1px
+                    );
+                    background-size: 20px 20px;
+                "
+            />
+            <UserInitials />
+            <div class="relative">
+                <h2 class="text-lg font-bold text-secondary">
+                    {{ `${userInfo.firstName} ${userInfo.lastName}` }}
+                </h2>
+                <p class="text-sm text-secondary font-medium">
+                    Profil utilisateur
+                </p>
+            </div>
+        </div>
     <!-- Formulaire -->
     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
       <UFormField label="NOM">
@@ -140,7 +139,7 @@ const selected = ref(user?.userFolder?.phone_country);
 const saving = ref(false);
 
 const saveUser = async () => {
-  if (!user?.id) return;
+    if (!user?.id) return;
 
   saving.value = true;
   try {
@@ -163,15 +162,6 @@ const saveUser = async () => {
       });
       window.location.reload();
     }
-  } catch (err) {
-    toast.add({
-      title: "Échec de la mise à jour",
-      description: "Une erreur est survenue. Veuillez réessayer.",
-      color: "error",
-    });
-  } finally {
-    saving.value = false;
-  }
 };
 </script>
 

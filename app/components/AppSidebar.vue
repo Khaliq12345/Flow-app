@@ -56,17 +56,39 @@
         orientation="vertical"
       />
 
-      <UButton
-        :label="collapsed ? undefined : 'Déconnexion'"
-        icon="i-lucide-log-out"
-        color="error"
-        variant="outline"
-        block
-        :square="collapsed"
-        class="mt-auto"
-        @click="cleanUser()"
-        to="/login"
-      />
+      <FreeQuotaDesktop v-if="!collapsed" />
+      <UPopover>
+        <UButton
+          icon="i-lucide-info"
+          color="neutral"
+          variant="ghost"
+          v-if="collapsed"
+        />
+
+        <template #content>
+          <FreeQuotaDesktop />
+        </template>
+      </UPopover>
+    </template>
+
+    <template #footer="{ collapsed }">
+      <div
+        class="w-full flex flex-row md:flex-col items-center justify-between gap-2"
+      >
+        <UColorModeButton />
+
+        <UButton
+          :label="collapsed ? undefined : 'Déconnexion'"
+          icon="i-lucide-log-out"
+          color="error"
+          variant="outline"
+          block
+          :square="collapsed"
+          class="mt-auto"
+          @click="cleanUser()"
+          to="/login"
+        />
+      </div>
     </template>
   </UDashboardSidebar>
 </template>

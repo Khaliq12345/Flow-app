@@ -4,21 +4,34 @@
 
 :root {
     --ui-primary: black; /* near black */
-    --ui-secondary: #404040; /* dark gray */
+    --ui-secondary: #f5f5f5; /* dark gray */
     --ui-success: blue; /* keep green */
     --ui-info: #2563eb; /* keep blue */
     --ui-warning: #d97706; /* keep amber */
     --ui-error: #dc2626; /* keep red */
+
+    --ui-bg: white;
+    --ui-bg-muted: #f9fafb; /* neutral-50 */
+    --ui-bg-elevated: #f3f4f6; /* neutral-100 */
+    --ui-bg-accented: #e5e7eb; /* neutral-200 */
+    --ui-bg-inverted: #0a0a0a; /* neutral-950 */
 }
 
 .dark {
     --ui-primary: #f5f5f5; /* near white */
-    --ui-secondary: #a3a3a3; /* light gray */
+    --ui-secondary: black; /* light gray */
     --ui-success: blue; /* lighter green */
     --ui-info: #60a5fa; /* lighter blue */
     --ui-warning: #fbbf24; /* lighter amber */
     --ui-error: #f87171; /* lighter red */
+
+    --ui-bg: black;
+    --ui-bg-muted: #0a0a0a; /* near-black base */
+    --ui-bg-elevated: #141414; /* one step up */
+    --ui-bg-accented: #1f1f1f; /* interactive/hover */
+    --ui-bg-inverted: #ffffff;
 }
+
 .rootdiv {
     @apply w-full px-4 pt-2 pb-20 md:pb-5 overflow-y-auto space-y-4 2xl:mx-auto 2xl:max-w-6xl 2xl:[scrollbar-width:none];
 }
