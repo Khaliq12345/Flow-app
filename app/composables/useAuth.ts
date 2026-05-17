@@ -27,7 +27,8 @@ export const useAuth = () => {
         method: "POST",
         body: { email, password },
       });
-      authStore.setToken(loginUser.access_token);
+      console.log(loginUser);
+      authStore.setToken(loginUser.access_token, loginUser.refresh_token);
       await router.push("/");
       console.log("navigation complete");
     } catch (err: any) {

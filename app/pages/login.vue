@@ -1,13 +1,7 @@
 <template>
-    <div class="relative min-h-screen w-full">
+    <div class="relative min-h-screen w-full overflow-hidden">
         <!-- Vidéo plein écran en arrière-plan -->
-        <video
-            :src="videoSrc"
-            autoplay
-            muted
-            loop
-            class="absolute inset-0 w-full h-full object-cover"
-        />
+        <VideoGrid></VideoGrid>
 
         <!-- Overlay sombre pour lisibilité -->
         <div class="absolute inset-0 bg-black/40" />
@@ -78,7 +72,6 @@ const colorMode = useColorMode();
 const isDark = computed(() => colorMode.value === "dark");
 
 // Liste des vidéos disponibles
-const videos = ["https://www.pexels.com/fr-fr/download/video/32053942/"];
 const fields = [
     {
         name: "email",
@@ -97,9 +90,6 @@ const schema = z.object({
     email: z.email("Email invalide"),
     password: z.string("Mot de passe invalide").min(6, "Minimum 6 caractères"),
 });
-
-// Vidéo sélectionnée aléatoirement au montage du composant
-const videoSrc = ref(videos[Math.floor(Math.random() * videos.length)]);
 
 type Schema = z.output<typeof schema>;
 

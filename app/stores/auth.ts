@@ -7,21 +7,20 @@ export const useAuthStore = defineStore(
   "userStore",
   () => {
     const token = ref<string | null>(null);
+    const refreshToken = ref<string | null>(null);
     const user = ref<User>();
     const isAuthenticated = ref<boolean>(false);
     const location = reactive({});
 
     const setUser = async (userId: any) => {
       const { getUser } = useUser();
-      if (!userId) {
-        return;
-      } else {
-        user.value = (await getUser(userId)) as any;
-      }
+      if (!userId) return;
+      user.value = (await getUser(userId)) as any;
     };
 
-    const setToken = (accessToken: string | null) => {
+    const setToken = (accessToken: string | null, refresh: string | null) => {
       token.value = accessToken;
+      refreshToken.value = refresh;
     };
 
     const setAuthenticated = async () => {
@@ -29,27 +28,39 @@ export const useAuthStore = defineStore(
         isAuthenticated.value = false;
         return;
       }
+
       const client = useDirectusUser(token.value);
 
       try {
+        // 1. Try the existing token
         const response = await client.request(readMe());
         await setUser(response.id);
         isAuthenticated.value = true;
       } catch (err) {
         console.warn("Token expired or invalid, attempting refresh...");
         try {
-          // 1. Attempt to refresh the token
-          const result = await client.request(refresh());
-          console.log("RESULT REFRESH ", refresh);
-          // 2. Update your local token storage/state
-          token.value = result.access_token;
-          isAuthenticated.value = true;
+          // 2. Refresh using "json" mode (sends refresh_token in body, not cookie)
+          const result = await client.request(refresh("json"));
 
+          if (!result.access_token) {
+            throw new Error("No access token returned from refresh");
+          }
+
+          // 3. Update the stored token and rebuild the client with the new token
+          token.value = result.access_token;
+          const refreshedClient = useDirectusUser(result.access_token);
+
+          // 4. Re-fetch the user with the new valid token
+          const me = await refreshedClient.request(readMe());
+          await setUser(me.id);
+
+          isAuthenticated.value = true;
           console.log("Token refreshed successfully");
         } catch (refreshErr) {
-          // 4. If refresh fails, the session is truly dead
-          console.error("Refresh failed, redirecting to login", refreshErr);
+          // 5. Refresh failed — full logout
+          console.error("Refresh failed, clearing session", refreshErr);
           token.value = null;
+          user.value = undefined;
           isAuthenticated.value = false;
         }
       }
@@ -58,7 +69,7 @@ export const useAuthStore = defineStore(
     const cleanUser = () => {
       isAuthenticated.value = false;
       user.value = undefined;
-      token.value = "";
+      token.value = null; // null instead of "" for consistency with the ref type
     };
 
     const getToken = computed(() => token.value);
@@ -70,12 +81,11 @@ export const useAuthStore = defineStore(
       user,
       location,
       token,
+      refreshToken,
       setAuthenticated,
       cleanUser,
       getToken,
     };
   },
-  {
-    persist: true,
-  },
+  { persist: true },
 );
